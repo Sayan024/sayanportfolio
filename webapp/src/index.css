@@ -1,0 +1,121 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+:root {
+  /* Premium Dark Theme */
+  --bg-color: #030303;
+  --bg-color-light: #0d0d0d;
+  --bg-color-lighter: #151515;
+  
+  /* Text */
+  --text-primary: #f8f8f8;
+  --text-secondary: #a1a1aa;
+  
+  /* Amber/Gold Accent */
+  --accent-color: #fbbf24; /* Lighter Amber for better contrast */
+  --accent-hover: #f59e0b;
+  --accent-light: rgba(251, 191, 36, 0.1);
+  --accent-glow: rgba(251, 191, 36, 0.3);
+  
+  /* Advanced Glassmorphism */
+  --glass-bg: rgba(20, 20, 20, 0.5);
+  --glass-border: rgba(255, 255, 255, 0.05);
+  --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+  --glass-highlight: inset 0 1px 0 0 rgba(255, 255, 255, 0.1);
+  
+  /* Layout */
+  --max-width: 1200px;
+  --section-padding: 120px 24px;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  font-family: 'Inter', sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-primary);
+  overflow-x: hidden;
+}
+
+body {
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Glassmorphism utility */
+.glass-card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--glass-border);
+  border-radius: 20px;
+  box-shadow: var(--glass-shadow);
+  box-shadow: var(--glass-shadow), var(--glass-highlight);
+}
+
+/* Container utility */
+.container {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  width: 100%;
+}
+
+.section {
+  padding: var(--section-padding);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.section-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 3rem;
+  text-align: center;
+  background: linear-gradient(to right, var(--text-primary), var(--text-secondary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.section-title span {
+  color: var(--accent-color);
+  -webkit-text-fill-color: var(--accent-color);
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-color);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--bg-color-lighter);
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-color);
+}
+
+/* Focus Utility */
+:focus-visible {
+  outline: 2px solid var(--accent-color);
+  outline-offset: 2px;
+}
+
+/* Base button reset */
+button {
+  font-family: 'Inter', sans-serif;
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: inherit;
+}

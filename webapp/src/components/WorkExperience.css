@@ -1,0 +1,438 @@
+/* Container & Header Setup */
+.experience-section {
+  padding: 100px 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.section-subtitle {
+  color: var(--text-secondary);
+  font-size: 1.1rem;
+  margin-top: 0.5rem;
+  margin-bottom: 3rem;
+}
+
+/* Main Role Card (Top) */
+.main-role-card {
+  max-width: 1000px;
+  margin: 0 auto 6rem auto;
+  padding: 3rem;
+  position: relative;
+  background: rgba(17, 24, 39, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(12px);
+  border-radius: 24px;
+}
+
+.main-card-body {
+  gap: 4rem;
+}
+
+.accent-glow {
+  box-shadow: 0 0 20px rgba(251, 191, 36, 0.2);
+  border-color: rgba(251, 191, 36, 0.4);
+}
+
+/* Growth Timeline Architecture */
+.growth-timeline-wrapper {
+  position: relative;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 2rem 0;
+}
+
+/* Central Glowing Track */
+.timeline-track {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 4px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 4px;
+  z-index: 0;
+}
+
+.timeline-progress {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background: linear-gradient(to bottom, #3b82f6, #f59e0b, #10b981);
+  border-radius: 4px;
+  box-shadow: 0 0 15px rgba(255,255,255,0.2);
+}
+
+/* Phase Rows (Grid Layout) */
+.phases-container {
+  display: flex;
+  flex-direction: column;
+  gap: 6rem;
+  position: relative;
+  z-index: 1;
+}
+
+.phase-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  position: relative;
+}
+
+.phase-half {
+  flex: 1;
+  width: 50%;
+}
+
+.phase-left {
+  padding-right: 4rem;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.phase-right {
+  padding-left: 4rem;
+  display: flex;
+  justify-content: flex-start;
+}
+
+/* Central Node */
+.phase-node-container {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2;
+}
+
+.phase-node {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--bg-color);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 3px solid;
+  box-shadow: 0 0 25px rgba(0,0,0,0.5);
+  position: relative;
+}
+
+/* Phase Card Styling */
+.phase-card {
+  width: 100%;
+  max-width: 480px;
+  padding: 2.5rem;
+  border-radius: 20px;
+  background: rgba(17, 24, 39, 0.7);
+  backdrop-filter: blur(10px);
+  border-top: 2px solid;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.phase-card::after {
+  content: '';
+  position: absolute;
+  top: 24px;
+  width: 20px;
+  height: 2px;
+  background: rgba(255,255,255,0.2);
+}
+
+.row-odd .phase-card::after {
+  right: -20px;
+}
+
+.row-even .phase-card::after {
+  left: -20px;
+}
+
+/* Typography & Content within Phases */
+.phase-card-header {
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.phase-id {
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.phase-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+}
+
+.phase-subtitle {
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  font-style: italic;
+}
+
+.phase-section {
+  margin-bottom: 1.5rem;
+}
+
+.phase-subheading {
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #9ca3af;
+  margin-bottom: 1rem;
+}
+
+.phase-list {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.phase-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.8rem;
+  font-size: 0.95rem;
+  color: #d1d5db;
+  line-height: 1.5;
+}
+
+.bullet {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  margin-top: 8px;
+  flex-shrink: 0;
+}
+
+.outcomes-section {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px dashed rgba(255,255,255,0.1);
+  margin-bottom: 0;
+}
+
+.outcome-list li {
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+/* Accent Colors Implementation */
+/* Blue - Phase 1 */
+.accent-blue { border-color: #3b82f6; color: #3b82f6; box-shadow: 0 0 20px rgba(59, 130, 246, 0.3); }
+.accent-blue-border { border-top-color: #3b82f6; }
+.accent-blue-text { color: #3b82f6; }
+.accent-blue-bg { background-color: #3b82f6; }
+
+/* Amber - Phase 2 */
+.accent-amber { border-color: #f59e0b; color: #f59e0b; box-shadow: 0 0 20px rgba(245, 158, 11, 0.3); }
+.accent-amber-border { border-top-color: #f59e0b; }
+.accent-amber-text { color: #f59e0b; }
+.accent-amber-bg { background-color: #f59e0b; }
+
+/* Green - Phase 3 */
+.accent-green { border-color: #10b981; color: #10b981; box-shadow: 0 0 20px rgba(16, 185, 129, 0.3); }
+.accent-green-border { border-top-color: #10b981; }
+.accent-green-text { color: #10b981; }
+.accent-green-bg { background-color: #10b981; }
+
+/* Maintain Existing Styles for Top Card components */
+.exp-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 2rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid var(--glass-border);
+}
+
+.exp-company-info {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.company-logo-ph {
+  width: 56px;
+  height: 56px;
+  background: var(--bg-color-lighter);
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent-color);
+  flex-shrink: 0;
+}
+
+.exp-role {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 0.3rem;
+  letter-spacing: -0.3px;
+}
+
+.exp-company {
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.exp-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.5rem;
+}
+
+.badge {
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.type-badge {
+  background: rgba(255,255,255,0.1);
+  color: var(--text-primary);
+}
+
+.date-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--accent-color);
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.exp-body {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+}
+
+.sub-heading {
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--text-secondary);
+  margin-bottom: 1rem;
+}
+
+.highlight-heading {
+  color: var(--accent-color);
+}
+
+.custom-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.custom-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.8rem;
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+.list-icon {
+  margin-top: 2px;
+  color: #666;
+  flex-shrink: 0;
+}
+
+.list-icon-highlight {
+  margin-top: 2px;
+  color: #10b981;
+  flex-shrink: 0;
+}
+
+.highlight-list li {
+  color: var(--text-primary);
+}
+
+/* Responsive Design */
+@media (max-width: 992px) {
+  .exp-body.main-card-body {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .main-role-card {
+    padding: 1.5rem;
+  }
+  
+  .exp-header {
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .exp-meta {
+    align-items: flex-start;
+  }
+
+  .timeline-track {
+    left: 28px;
+  }
+
+  .phase-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .phase-half {
+    width: 100%;
+  }
+
+  .phase-left, .phase-right {
+    padding: 0 0 0 60px;
+  }
+
+  .phase-node-container {
+    left: 28px;
+    top: 0;
+  }
+
+  .phase-node {
+    width: 40px;
+    height: 40px;
+  }
+
+  .phase-card::after {
+    display: none;
+  }
+
+  .phases-container {
+    gap: 3rem;
+  }
+  
+  .phase-card {
+    margin-top: 1rem;
+  }
+}
