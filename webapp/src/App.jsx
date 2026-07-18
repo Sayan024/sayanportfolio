@@ -7,6 +7,8 @@ import Education from './components/Education';
 import Skills from './components/Skills';
 import Certifications from './components/Certifications';
 import Contact from './components/Contact';
+import ChatAssistant from './components/ChatAssistant';
+import ScrollSequence from './components/ScrollSequence';
 
 function App() {
   return (
@@ -15,12 +17,15 @@ function App() {
       <main>
         <Landing />
         <AboutMe />
-        <WorkExperience />
-        <Education />
+        <ScrollSequence>
+          <WorkExperience />
+          <Education />
+        </ScrollSequence>
         <Skills />
         <Certifications />
         <Contact />
       </main>
+      <ChatAssistant />
     </div>
   );
 }

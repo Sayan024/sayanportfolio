@@ -1,0 +1,217 @@
+\documentclass[11pt,letterpaper]{article}
+
+\usepackage[letterpaper,margin=0.5in]{geometry}
+\usepackage[utf8]{inputenc}
+\usepackage{mdwlist}
+\usepackage[default]{lato}
+\usepackage[T1]{fontenc}
+\usepackage{textcomp}
+\usepackage[usenames,dvipsnames]{color}
+\usepackage{fontawesome5}
+\usepackage{enumitem}
+\usepackage[colorlinks=true, urlcolor=blue, linkcolor=red]{hyperref}
+
+\DeclareFontFamily{U}{fontawesomeOne}{}
+\DeclareFontShape{U}{fontawesomeOne}{m}{n}
+{<-> FontAwesome--fontawesomeone}{}
+\DeclareRobustCommand\FAone{\fontencoding{U}\fontfamily{fontawesomeOne}\selectfont}
+
+\pagestyle{empty}
+\setlength{\tabcolsep}{0em}
+
+% Custom Environments
+\newenvironment{indentsection}[1]%
+{\begin{list}{}%
+{\setlength{\leftmargin}{#1}}%
+     \item[]
+}
+{\end{list}}
+
+\newenvironment{unindentsection}[1]%
+{\begin{list}{}%
+{\setlength{\leftmargin}{-0.5#1}}%
+\item[]%
+}
+{\end{list}}
+
+% Header Row
+\newcommand{\headerrow}[2]
+{\begin{tabular*}{\linewidth}{l@{\extracolsep{\fill}}r}
+#1 &
+#2 \\
+\end{tabular*}}
+
+% C++
+\newcommand{\CPP}
+{C\nolinebreak[4]\hspace{-.05em}\raisebox{.22ex}{\footnotesize\bf ++}}
+
+\begin{document}
+
+% ========================= HEADER =========================
+
+\begin{center}
+
+{\LARGE \textbf{Sayan Banerjee}}\\
+\vspace{0.15cm}
+{\large \textbf{Associate Technical Consultant -- AI \& Data Analytics}} \\
+
+\vspace{0.25cm}
+
+{\small
+\raisebox{-0.1\height}{\large \faPhone} \ (+91) 9875657249
+\quad \textbullet \quad
+\raisebox{-0.1\height}{\large \faEnvelope} \ \href{mailto:sayanbanerjee024@gmail.com}{sayanbanerjee024@gmail.com}
+\quad \textbullet \quad
+\raisebox{-0.1\height}{\large \faMapMarker} \ Kolkata, West Bengal
+}
+
+\vspace{0.15cm}
+
+{\small
+\raisebox{-0.1\height}{\large \faGlobe} \ \href{https://sayanportfolio-tau.vercel.app/}{sayanportfolio-tau.vercel.app}
+\quad \textbullet \quad
+\raisebox{-0.1\height}{\large \faGithub} \ \href{https://github.com/sayan024}{github.com/sayan024}
+\quad \textbullet \quad
+\raisebox{-0.1\height}{\large \faLinkedin} \ \href{https://www.linkedin.com/in/sayanbanerjee24}{linkedin.com/in/sayanbanerjee24}
+}
+
+\end{center}
+
+\hrule
+\vspace{-0.8em}
+
+% ========================= SUMMARY =========================
+
+\subsection*{\Large Professional Summary}
+
+Data Engineer specializing in building scalable ETL/ELT pipelines, Lakehouse architectures, and enterprise data platforms. Expert in the Microsoft Data Stack (Fabric, Azure Data Factory, SQL) and PySpark. Proven track record of implementing Medallion Architectures (Bronze, Silver, Gold) and orchestrating automated data integration workflows to deliver high-performance, analytics-ready datasets for enterprise financial services.
+
+\vspace{0.6em}
+
+\hrule
+\vspace{-0.8em}
+
+% ========================= SKILLS =========================
+
+\subsection*{\Large Skills}
+
+\begin{itemize}[leftmargin=1em,noitemsep]
+
+\item \textbf{Data Engineering:} Microsoft Fabric, Azure Databricks, ETL/ELT Pipelines, Data Modeling, Data Warehousing, Lakehouse Architecture, Delta Lake, Medallion Architecture, Incremental Loading, Orchestration
+
+\item \textbf{Programming \& Query Languages:} Python, SQL, PySpark, JavaScript
+
+\item \textbf{Cloud \& Platforms:} Microsoft Azure, Azure Data Factory, Azure Synapse Analytics, Azure DevOps, Git, GitHub Actions, CI/CD
+
+\item \textbf{Databases:} SQL Server, MySQL, Oracle
+
+\item \textbf{Analytics \& Visualization:} Power BI, DAX, Power Query, Semantic Models, KPI Reporting
+
+\item \textbf{Development Tools:} REST APIs, Data Governance, Data Quality Validation
+
+\item \textbf{Operating Systems:} Windows, Linux (Ubuntu)
+
+\end{itemize}
+
+\hrule
+\vspace{-0.8em}
+
+% ========================= EXPERIENCE =========================
+
+\subsection*{\Large Professional Experience}
+
+\begin{itemize}[leftmargin=1em,noitemsep]
+
+\item
+
+\headerrow{\textbf{Associate Technical Consultant - AI \& Data Analytics | Embee Software Pvt. Ltd.}}{\textbf{Dec 2024 - Present}}
+
+\begin{itemize}[noitemsep]
+
+\item Engineered scalable data platforms and automated ETL pipelines using Microsoft Fabric, Azure Data Factory, and PySpark for enterprise financial services clients.
+
+\item Architected enterprise data models and star schemas, optimizing semantic layers to support high-performance analytical queries and portfolio benchmarking.
+
+\item Automated data ingestion workflows extracting multi-source enterprise data into Fabric Lakehouse using PySpark and ADF, reducing manual data processing overhead.
+
+\item Implemented scalable Lakehouse architectures utilizing Delta Lake and Parquet formats, ensuring ACID compliance, data versioning, and optimized downstream reporting.
+
+\item Orchestrated robust data transformation frameworks using Fabric Notebooks and Medallion Architecture, standardizing raw data into curated Gold layers for business consumption.
+
+\item Integrated curated enterprise datasets with downstream BI tools, implementing Row-Level Security (RLS) and parameterized reporting to ensure strict data governance.
+
+\item Administered enterprise data platform environments, managing workspace deployments, data gateways, and scheduled pipeline orchestration.
+
+\item Partnered with financial stakeholders to translate complex business logic into automated ETL workflows and scalable data engineering solutions.
+
+\end{itemize}
+
+\end{itemize}
+
+\hrule
+\vspace{-0.8em}
+
+% % ========================= PROJECTS =========================
+
+% \subsection*{\Large Projects}
+% \begin{itemize}[leftmargin=1em,noitemsep]
+%     \item \textbf{End-to-End Fabric Lakehouse Data Pipeline} \\
+%     Engineered an automated data pipeline using Azure Data Factory and PySpark to ingest raw data, process it through a Medallion Architecture (Bronze $\rightarrow$ Silver $\rightarrow$ Gold), and expose optimized Delta tables for downstream consumption.
+%     \item \textbf{Automated Financial Data Integration} \\
+%     Developed robust ELT workflows using Python and SQL to integrate disparate financial datasets, implementing data quality validation and incremental loading patterns to ensure reliable reporting.
+% \end{itemize}
+
+% \hrule
+% \vspace{-0.8em}
+
+% ========================= CERTIFICATIONS =========================
+
+\subsection*{\Large Certifications}
+
+\begin{itemize}[leftmargin=1em,noitemsep]
+
+\item
+\textbf{Microsoft Certified: Fabric Data Engineer Associate (DP-700)}
+\href{https://learn.microsoft.com/api/credentials/share/en-in/SayanBanerjee-3854/2BD18E16EC520850?sharingId=4A16B92B473CC26C}{(view)}
+
+\item
+\textbf{Databricks Certified Data Engineer Associate}
+\href{https://credentials.databricks.com/fd8b180d-776d-4bf4-a377-cd97b8e59479}{(view)}
+
+\item
+\textbf{Microsoft Certified: Fabric Analytics Engineer Associate (DP-600)}
+\href{https://learn.microsoft.com/api/credentials/share/en-in/SayanBanerjee-3854/73189B7510B02DC2?sharingId=4A16B92B473CC26C}{(view)}
+
+\item
+\textbf{Microsoft Certified: Power BI Data Analyst Associate (PL-300)}
+\href{https://learn.microsoft.com/api/credentials/share/en-us/SayanBanerjee-3854/78F1D0BA46D6F08D?sharingId=4A16B92B473CC26C}{(view)}
+
+\item
+\textbf{HackerRank SQL – 3 Star Badge}
+\href{https://www.hackerrank.com/profile/sayanbanerjee024}{(view)}
+
+\end{itemize}
+
+\hrule
+\vspace{-0.8em}
+% ========================= EDUCATION =========================
+
+\subsection*{\Large Education}
+
+\begin{itemize}[leftmargin=1em]
+
+\item
+
+\headerrow{\textbf{Techno India University}}{\textbf{Kolkata, West Bengal}}
+
+\headerrow{\emph{Master of Computer Applications (MCA)} | CGPA: 8.87}{\emph{2022 – 2024}}
+
+\item
+
+\headerrow{\textbf{Taradevi Harakhchand Kankaria Jain College}}{\textbf{Kolkata, West Bengal}}
+
+\headerrow{\emph{Bachelor of Science in Computer Science} | CGPA: 7.916}{\emph{2019 – 2022}}
+
+\end{itemize}
+
+\end{document}

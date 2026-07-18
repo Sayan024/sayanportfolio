@@ -82,8 +82,10 @@ const Education = () => {
             {/* Glowing Left Line */}
             <div className="edu-timeline-line"></div>
 
-            {educations.map((edu) => (
-              <motion.div key={edu.id} className="edu-timeline-item" variants={itemVariants}>
+            {educations.map((edu, index) => {
+              const isEven = index % 2 !== 0; // matching work experience logic
+              return (
+              <motion.div key={edu.id} className={`edu-timeline-item ${isEven ? 'right' : 'left'}`} variants={itemVariants}>
                 
                 {/* Timeline Node */}
                 <div className="edu-timeline-node">
@@ -127,7 +129,8 @@ const Education = () => {
                 </div>
 
               </motion.div>
-            ))}
+              );
+            })}
           </motion.div>
         </div>
       </div>
