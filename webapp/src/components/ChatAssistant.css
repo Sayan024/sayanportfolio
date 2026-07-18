@@ -31,8 +31,8 @@
   position: fixed;
   bottom: 100px;
   right: 30px;
-  width: 350px;
-  height: 500px;
+  width: 370px;
+  height: 520px;
   background: var(--glass-bg);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
@@ -41,7 +41,7 @@
   box-shadow: var(--glass-shadow);
   display: flex;
   flex-direction: column;
-  z-index: 1000;
+  z-index: 9999;
   overflow: hidden;
 }
 
@@ -250,18 +250,26 @@
 
 /* Mobile Responsiveness */
 @media (max-width: 768px) {
-  .chat-window {
-    width: calc(100% - 32px);
-    right: 16px;
-    bottom: 90px;
-    height: calc(100dvh - 110px);
-    max-height: 600px;
-    z-index: 9999;
-  }
-  
   .chat-toggle-btn {
     right: 16px;
     bottom: 16px;
+    width: 54px;
+    height: 54px;
+    z-index: 9999;
+  }
+
+  .chat-window {
+    /* Pin to bottom of screen, grow upward only */
+    position: fixed;
+    bottom: 82px;
+    top: auto;
+    left: 12px;
+    right: 12px;
+    width: auto;
+    /* Limit height so it never reaches top of screen */
+    height: min(520px, calc(100dvh - 100px));
+    max-height: calc(100dvh - 100px);
+    border-radius: 16px;
     z-index: 9999;
   }
 }
