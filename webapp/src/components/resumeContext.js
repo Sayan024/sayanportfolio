@@ -6,6 +6,11 @@ export const resumeContext = `
 **LinkedIn:** linkedin.com/in/sayanbanerjee24
 **GitHub:** github.com/sayan024
 
+## Career Opportunities & Preferences
+* **Target Roles:** Data Analyst, Data Engineer
+* **Status:** Actively looking for new opportunities in Data Analysis and Data Engineering.
+* **Expected Salary (CTC):** Around ₹9 LPA (Lakhs Per Annum)
+
 ## Professional Summary
 Data Engineer specializing in building scalable ETL/ELT pipelines, Lakehouse architectures, and enterprise data platforms. Expert in the Microsoft Data Stack (Fabric, Azure Data Factory, SQL) and PySpark. Proven track record of implementing Medallion Architectures (Bronze, Silver, Gold) and orchestrating automated data integration workflows to deliver high-performance, analytics-ready datasets for enterprise financial services.
 
