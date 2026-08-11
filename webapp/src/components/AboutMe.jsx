@@ -103,7 +103,7 @@ const AboutMe = () => {
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
             >
-              I currently work as an Associate Technical Consultant focused on Data Engineering, Analytics, and AI-driven reporting solutions. My expertise spans Microsoft Fabric, Azure Databricks, Power BI, SQL, PySpark, and enterprise cloud ecosystems. I design scalable ETL pipelines, semantic models, reporting systems, and analytics architectures that support business-critical decisions. I enjoy solving complex data problems and turning disconnected datasets into meaningful business stories.
+              I currently work as a Technical Consultant focused on Data Engineering, Analytics, and AI-driven reporting solutions. My expertise spans Microsoft Fabric, Azure Databricks, Power BI, SQL, PySpark, and enterprise cloud ecosystems. I design scalable ETL pipelines, semantic models, reporting systems, and analytics architectures that support business-critical decisions. I enjoy solving complex data problems and turning disconnected datasets into meaningful business stories.
             </motion.p>
 
             <div className="mission-vision-container">

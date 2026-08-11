@@ -5,6 +5,7 @@ import AboutMe from './components/AboutMe';
 import WorkExperience from './components/WorkExperience';
 import Education from './components/Education';
 import Skills from './components/Skills';
+import Projects from './components/Projects';
 import Certifications from './components/Certifications';
 import Contact from './components/Contact';
 import ChatAssistant from './components/ChatAssistant';
@@ -22,6 +23,7 @@ function App() {
           <Education />
         </ScrollSequence>
         <Skills />
+        <Projects />
         <Certifications />
         <Contact />
       </main>

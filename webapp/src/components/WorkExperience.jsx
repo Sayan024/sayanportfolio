@@ -13,7 +13,7 @@ const WorkExperience = () => {
   const lineHeight = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
 
   const currentRole = {
-    role: "Associate Technical Consultant – AI & Data Analytics",
+    role: "Technical Consultant – AI & Data Analytics",
     company: "Embee Software Pvt Ltd",
     type: "Full-Time",
     location: "India",
