@@ -5,18 +5,22 @@ import './ChatAssistant.css';
 import { resumeContext } from './resumeContext';
 
 const MODELS = [
-  "nvidia/nemotron-3.5-lightning:free",
-  "apodex/apodex-1.1-mini:free",
-  "thinkingmachines/inkling:free",
-  "nvidia/nemotron-3-ultra-550b-a55b:free",
+  // Ordered fastest-first (measured Oct 2026)
   "nvidia/nemotron-3-super-120b-a12b:free",
+  "apodex/apodex-1.1-mini:free",
+  "nvidia/nemotron-3.5-lightning:free",
   "google/gemma-4-31b-it:free",
   "google/gemma-4-26b-a4b-it:free",
+  "thinkingmachines/inkling:free",
   "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free",
+  "nvidia/nemotron-3-ultra-550b-a55b:free",
   // Not in OpenRouter's model catalog as of Oct 2026; kept last so they don't slow down every request
   "inception/mercury-decide:free",
   "openai/gpt-oss-20b:free"
 ];
+
+// Give up on a model that hasn't answered in this long and try the next one
+const MODEL_TIMEOUT_MS = 12000;
 
 const SYSTEM_PROMPT =`You are a helpful AI assistant on Sayan Banerjee's portfolio website. 
 Your job is to answer questions about Sayan's skills, experience, projects, target roles, and career expectations using ONLY the provided CV context below.
@@ -87,8 +91,10 @@ const ChatAssistant = () => {
             body: JSON.stringify({
               model,
               messages: apiMessages,
-              reasoning: { enabled: true }
-            })
+              // Reasoning off: these are simple CV lookups and thinking tokens only add latency
+              reasoning: { enabled: false }
+            }),
+            signal: AbortSignal.timeout(MODEL_TIMEOUT_MS)
           });
 
           const data = await response.json();

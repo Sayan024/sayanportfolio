@@ -119,11 +119,11 @@ const Certifications = () => {
     },
     {
       id: 6,
-      title: "HackerRank SQL Badge",
-      provider: "HackerRank",
-      code: "3 Star",
-      image: "HackerRank SQL Badge.jpg",
-      url: "https://www.hackerrank.com/profile/sayanbanerjee024"
+      title: "SQL AI Developer Associate",
+      provider: "Microsoft",
+      code: "Associate",
+      image: "Microsoft Certified SQL AI Developer Associate.png",
+      url: "https://learn.microsoft.com/api/credentials/share/en-in/SayanBanerjee-3854/6583783B2D1E1214?sharingId=4A16B92B473CC26C"
     }
   ];
 

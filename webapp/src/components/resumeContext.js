@@ -58,7 +58,7 @@ Unmonitored product refund surges and shipping delays caused customer churn. Bui
 * Databricks Certified Data Engineer Associate
 * Microsoft Certified: Fabric Analytics Engineer Associate (DP-600)
 * Microsoft Certified: Power BI Data Analyst Associate (PL-300)
-* HackerRank SQL – 3 Star Badge
+* Microsoft Certified: SQL AI Developer Associate
 
 ## Education
 * **Master of Computer Applications (MCA)** - Techno India University, Kolkata (2022 - 2024) | CGPA: 8.87
