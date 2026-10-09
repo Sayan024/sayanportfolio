@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Send, Bot, User } from 'lucide-react';
+import { X, Send, Bot, User, Check } from 'lucide-react';
 import './ChatAssistant.css';
 import { resumeContext } from './resumeContext';
 
@@ -28,6 +28,11 @@ const SUGGESTED_QUESTIONS = [
   "Show me his projects",
   "Which certifications?"
 ];
+
+// The conversation summary is emailed to Sayan after this much inactivity, or when the visitor leaves the page
+const SUMMARY_IDLE_MS = 2 * 60 * 1000;
+const SUMMARY_ENDPOINT = '/api/chat-summary';
+const MIN_USER_MESSAGES_FOR_SUMMARY = 2;
 
 // Sayan's first (and current) professional role started in Dec 2024
 const CAREER_START = new Date(2024, 11, 1);
@@ -133,7 +138,15 @@ const ChatAssistant = () => {
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
+  // Optional contact details the visitor chooses to leave
+  const [visitor, setVisitor] = useState(null);
+  const [leadDismissed, setLeadDismissed] = useState(false);
+  const [leadForm, setLeadForm] = useState({ name: '', email: '' });
+
   const messagesEndRef = useRef(null);
+  const messagesRef = useRef(messages);
+  const visitorRef = useRef(visitor);
+  const lastSummaryRef = useRef('');
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -143,7 +156,47 @@ const ChatAssistant = () => {
     if (isOpen) {
       scrollToBottom();
     }
-  }, [messages, isOpen, isLoading]);
+  }, [messages, isOpen, isLoading, visitor, leadDismissed]);
+
+  // Emails Sayan a summary of the conversation, at most once per conversation state
+  const sendSummary = (pageIsClosing) => {
+    const chat = messagesRef.current;
+    const userCount = chat.filter(m => m.role === 'user').length;
+    const signature = `${chat.length}|${visitorRef.current?.email || ''}`;
+    if (userCount < MIN_USER_MESSAGES_FOR_SUMMARY || signature === lastSummaryRef.current) return;
+    lastSummaryRef.current = signature;
+
+    const payload = JSON.stringify({
+      messages: chat.map(m => ({ role: m.role, content: m.content })),
+      visitor: visitorRef.current
+    });
+
+    if (pageIsClosing && navigator.sendBeacon) {
+      navigator.sendBeacon(SUMMARY_ENDPOINT, new Blob([payload], { type: 'application/json' }));
+    } else {
+      fetch(SUMMARY_ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: payload,
+        keepalive: true
+      }).catch(() => {});
+    }
+  };
+
+  // Treat the conversation as ended after a period of inactivity
+  useEffect(() => {
+    messagesRef.current = messages;
+    visitorRef.current = visitor;
+    const idleTimer = setTimeout(() => sendSummary(false), SUMMARY_IDLE_MS);
+    return () => clearTimeout(idleTimer);
+  }, [messages, visitor]);
+
+  // ...or when the visitor leaves the page
+  useEffect(() => {
+    const handlePageHide = () => sendSummary(true);
+    window.addEventListener('pagehide', handlePageHide);
+    return () => window.removeEventListener('pagehide', handlePageHide);
+  }, []);
 
   const sendMessage = async (text) => {
     const question = text.trim();
@@ -223,7 +276,16 @@ const ChatAssistant = () => {
     sendMessage(inputValue);
   };
 
+  const handleLeadSubmit = (e) => {
+    e.preventDefault();
+    const email = leadForm.email.trim();
+    if (!email) return;
+    setVisitor({ name: leadForm.name.trim(), email });
+  };
+
   const showSuggestions = messages.length === 1 && !isLoading;
+  const userMessageCount = messages.filter(m => m.role === 'user').length;
+  const showLeadForm = userMessageCount >= MIN_USER_MESSAGES_FOR_SUMMARY && !visitor && !leadDismissed && !isLoading;
 
   return (
     <>
@@ -297,6 +359,39 @@ const ChatAssistant = () => {
                   ))}
                 </div>
               )}
+              {showLeadForm && (
+                <form className="chat-lead-card" onSubmit={handleLeadSubmit}>
+                  <p className="chat-lead-title">Want Sayan to follow up?</p>
+                  <p className="chat-lead-text">Leave your details and he'll get back to you.</p>
+                  <input
+                    type="text"
+                    placeholder="Your name (optional)"
+                    value={leadForm.name}
+                    onChange={(e) => setLeadForm({ ...leadForm, name: e.target.value })}
+                    maxLength={100}
+                  />
+                  <input
+                    type="email"
+                    placeholder="Your email"
+                    value={leadForm.email}
+                    onChange={(e) => setLeadForm({ ...leadForm, email: e.target.value })}
+                    maxLength={200}
+                    required
+                  />
+                  <div className="chat-lead-actions">
+                    <button type="submit" className="chat-lead-submit">Share</button>
+                    <button type="button" className="chat-lead-skip" onClick={() => setLeadDismissed(true)}>
+                      No thanks
+                    </button>
+                  </div>
+                </form>
+              )}
+              {visitor && (
+                <div className="chat-lead-card chat-lead-done">
+                  <Check size={16} />
+                  <span>Thanks{visitor.name ? `, ${visitor.name}` : ''}! Sayan will reach out at {visitor.email}.</span>
+                </div>
+              )}
               {isLoading && (
                 <div className="chat-bubble-container assistant">
                   <div className="chat-bubble-avatar">
@@ -325,6 +420,7 @@ const ChatAssistant = () => {
                 <Send size={18} />
               </button>
             </form>
+            <p className="chat-privacy-note">Chats may be shared with Sayan so he can follow up.</p>
           </motion.div>
         )}
       </AnimatePresence>

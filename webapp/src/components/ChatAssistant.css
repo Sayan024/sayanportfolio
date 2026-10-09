@@ -269,6 +269,100 @@
   color: var(--bg-color);
 }
 
+/* Optional contact card */
+.chat-lead-card {
+  margin-left: 32px;
+  padding: 12px 14px;
+  background: var(--accent-light);
+  border: 1px solid var(--accent-glow);
+  border-radius: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.chat-lead-title {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.chat-lead-text {
+  margin: 0;
+  font-size: 12.5px;
+  color: var(--text-secondary);
+}
+
+.chat-lead-card input {
+  background: #0f1117;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 10px;
+  padding: 8px 12px;
+  color: var(--text-primary);
+  font-size: 13px;
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.chat-lead-card input:focus {
+  border-color: var(--accent-color);
+}
+
+.chat-lead-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.chat-lead-submit {
+  background: linear-gradient(135deg, var(--accent-color) 0%, var(--accent-hover) 100%);
+  color: var(--bg-color);
+  border: none;
+  border-radius: 10px;
+  padding: 7px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.chat-lead-skip {
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 12.5px;
+  font-family: inherit;
+  cursor: pointer;
+  padding: 0;
+}
+
+.chat-lead-skip:hover {
+  color: var(--text-primary);
+}
+
+.chat-lead-done {
+  flex-direction: row;
+  align-items: center;
+  font-size: 13px;
+  color: var(--text-primary);
+}
+
+.chat-lead-done svg {
+  color: #22c55e;
+  flex-shrink: 0;
+}
+
+.chat-privacy-note {
+  margin: 0;
+  padding: 0 16px 10px;
+  background: #161b27;
+  font-size: 11px;
+  text-align: center;
+  color: #64748b;
+}
+
 /* Typing indicator */
 .chat-bubble.typing {
   display: flex;
