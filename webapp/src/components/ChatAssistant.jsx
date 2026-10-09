@@ -321,7 +321,8 @@ const ChatAssistant = () => {
         whileTap={{ scale: 0.9 }}
         aria-label="Open AI assistant"
       >
-        <img src="/aichat.gif" alt="AI Chat" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+        <img src="/chat-bubble.png" alt="" className="chat-toggle-bubble" />
+        <img src="/chat-mascot.png" alt="" className="chat-toggle-mascot" />
       </motion.button>
 
       {/* Chat Window */}
@@ -337,8 +338,8 @@ const ChatAssistant = () => {
             {/* Header */}
             <div className="chat-header">
               <div className="chat-header-info">
-                <div className="chat-avatar" style={{ overflow: 'hidden' }}>
-                  <img src="/aichat.gif" alt="AI" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                <div className="chat-avatar">
+                  <img src="/chat-bubble.png" alt="" />
                 </div>
                 <div>
                   <h3>Sayan's AI Assistant</h3>

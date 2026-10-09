@@ -2,35 +2,57 @@
 
 .chat-toggle-btn {
   position: fixed;
-  bottom: 30px;
-  right: 30px;
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  background: var(--glass-bg);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid var(--glass-border);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  bottom: 12px;
+  right: 16px;
+  width: 150px;
+  height: 136px;
+  padding: 0;
+  background: transparent;
+  border: none;
   cursor: pointer;
-  box-shadow: var(--glass-shadow);
   z-index: 1000;
   outline: none;
-  overflow: hidden;
+  transform-origin: bottom right;
 }
 
-.chat-toggle-btn img {
-  width: 100%;
+.chat-toggle-btn:focus-visible .chat-toggle-bubble {
+  filter: drop-shadow(0 0 10px var(--accent-color));
+}
+
+/* Mascot pointing at the chat bubble */
+.chat-toggle-mascot {
+  position: absolute;
+  right: 0;
+  bottom: 0;
   height: 100%;
-  object-fit: cover;
+  width: auto;
+  /* Soft rim light so the dark outline stays visible on the dark page */
+  filter: drop-shadow(0 0 1px rgba(255, 255, 255, 0.55)) drop-shadow(0 6px 14px rgba(0, 0, 0, 0.6));
+}
+
+.chat-toggle-bubble {
+  position: absolute;
+  left: 2px;
+  top: 0;
+  width: 66px;
+  height: auto;
+  filter: drop-shadow(0 4px 12px var(--accent-glow));
+  animation: chat-bubble-float 2.4s ease-in-out infinite;
+}
+
+@keyframes chat-bubble-float {
+  0%, 100% { transform: translateY(0) rotate(-4deg); }
+  50% { transform: translateY(-6px) rotate(2deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chat-toggle-bubble { animation: none; }
 }
 
 .chat-window {
   position: fixed;
-  bottom: 100px;
-  right: 30px;
+  bottom: 24px;
+  right: 24px;
   width: 370px;
   height: 520px;
   background: #0f1117;
@@ -62,18 +84,18 @@
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background: linear-gradient(135deg, var(--accent-color) 0%, var(--accent-hover) 100%);
+  background: #0f1117;
+  border: 1px solid var(--accent-glow);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--bg-color);
-  overflow: hidden;
+  flex-shrink: 0;
 }
 
 .chat-avatar img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+  width: 78%;
+  height: 78%;
+  object-fit: contain;
 }
 
 .chat-header h3 {
@@ -443,17 +465,21 @@
 /* Mobile Responsiveness */
 @media (max-width: 768px) {
   .chat-toggle-btn {
-    right: 16px;
-    bottom: 16px;
-    width: 54px;
-    height: 54px;
+    right: 8px;
+    bottom: 8px;
+    width: 106px;
+    height: 96px;
     z-index: 9999;
+  }
+
+  .chat-toggle-bubble {
+    width: 46px;
   }
 
   .chat-window {
     /* Pin to bottom of screen, grow upward only */
     position: fixed;
-    bottom: 82px;
+    bottom: 12px;
     top: auto;
     left: 12px;
     right: 12px;
