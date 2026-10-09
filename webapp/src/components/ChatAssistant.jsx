@@ -4,7 +4,21 @@ import { MessageCircle, X, Send, Bot, User, Loader2 } from 'lucide-react';
 import './ChatAssistant.css';
 import { resumeContext } from './resumeContext';
 
-const SYSTEM_PROMPT = `You are a helpful AI assistant on Sayan Banerjee's portfolio website. 
+const MODELS = [
+  "nvidia/nemotron-3.5-lightning:free",
+  "apodex/apodex-1.1-mini:free",
+  "thinkingmachines/inkling:free",
+  "nvidia/nemotron-3-ultra-550b-a55b:free",
+  "nvidia/nemotron-3-super-120b-a12b:free",
+  "google/gemma-4-31b-it:free",
+  "google/gemma-4-26b-a4b-it:free",
+  "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free",
+  // Not in OpenRouter's model catalog as of Oct 2026; kept last so they don't slow down every request
+  "inception/mercury-decide:free",
+  "openai/gpt-oss-20b:free"
+];
+
+const SYSTEM_PROMPT =`You are a helpful AI assistant on Sayan Banerjee's portfolio website. 
 Your job is to answer questions about Sayan's skills, experience, projects, target roles, and career expectations using ONLY the provided CV context below.
 Keep your answers relatively brief, friendly, and professional.
 If someone asks about salary expectations or current job search status, mention that Sayan is actively looking for new opportunities as a Data Analyst or Data Engineer with an expected salary of around ₹9 LPA.
@@ -60,30 +74,43 @@ const ChatAssistant = () => {
         }))
       ];
 
-      const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
-        method: "POST",
-        headers: {
-          "Authorization": `Bearer ${apiKey}`,
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          model: "openai/gpt-oss-20b:free", // Using the free tier model the user requested
-          messages: apiMessages,
-          reasoning: { enabled: true }
-        })
-      });
+      // Model routing: try each model in order, moving to the next on any failure
+      let assistantMessage = null;
+      for (const model of MODELS) {
+        try {
+          const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+            method: "POST",
+            headers: {
+              "Authorization": `Bearer ${apiKey}`,
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+              model,
+              messages: apiMessages,
+              reasoning: { enabled: true }
+            })
+          });
 
-      const data = await response.json();
-      
-      if (data.choices && data.choices[0]) {
-        const assistantMessage = data.choices[0].message;
+          const data = await response.json();
+
+          if (response.ok && data.choices?.[0]?.message?.content) {
+            assistantMessage = data.choices[0].message;
+            break;
+          }
+          console.warn(`Model ${model} failed, trying next:`, data.error?.message || response.status);
+        } catch (modelError) {
+          console.warn(`Model ${model} failed, trying next:`, modelError);
+        }
+      }
+
+      if (assistantMessage) {
         setMessages(prev => [...prev, {
           role: 'assistant',
           content: assistantMessage.content,
           reasoning_details: assistantMessage.reasoning_details
         }]);
       } else {
-        throw new Error("Invalid response format");
+        throw new Error("All models failed");
       }
       
     } catch (error) {
