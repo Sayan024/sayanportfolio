@@ -29,7 +29,7 @@ const SUGGESTED_QUESTIONS = [
   "Which certifications?"
 ];
 
-// The conversation summary is emailed to Sayan after this much inactivity, or when the visitor leaves the page
+// The conversation summary is emailed to Sayan when the chat is closed, after this much inactivity, or when the visitor leaves the page
 const SUMMARY_IDLE_MS = 2 * 60 * 1000;
 const SUMMARY_ENDPOINT = '/api/chat-summary';
 const MIN_USER_MESSAGES_FOR_SUMMARY = 2;
@@ -130,11 +130,13 @@ const renderMessage = (content) => {
   return blocks;
 };
 
+const INITIAL_MESSAGES = [
+  { role: 'assistant', content: "Hi! I'm Sayan's AI assistant. Ask me anything about his experience, skills, or projects." }
+];
+
 const ChatAssistant = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [messages, setMessages] = useState([
-    { role: 'assistant', content: "Hi! I'm Sayan's AI assistant. Ask me anything about his experience, skills, or projects." }
-  ]);
+  const [messages, setMessages] = useState(INITIAL_MESSAGES);
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
@@ -147,6 +149,8 @@ const ChatAssistant = () => {
   const messagesRef = useRef(messages);
   const visitorRef = useRef(visitor);
   const lastSummaryRef = useRef('');
+  // Bumped when the chat is closed so a late answer can't land in the next conversation
+  const conversationIdRef = useRef(0);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -201,6 +205,7 @@ const ChatAssistant = () => {
   const sendMessage = async (text) => {
     const question = text.trim();
     if (!question || isLoading) return;
+    const conversationId = conversationIdRef.current;
 
     const userMessage = { role: 'user', content: question };
     const newMessages = [...messages, userMessage];
@@ -251,6 +256,8 @@ const ChatAssistant = () => {
         }
       }
 
+      if (conversationId !== conversationIdRef.current) return;
+
       if (assistantMessage) {
         setMessages(prev => [...prev, {
           role: 'assistant',
@@ -262,18 +269,33 @@ const ChatAssistant = () => {
 
     } catch (error) {
       console.error("Chat error:", error);
+      if (conversationId !== conversationIdRef.current) return;
       setMessages(prev => [...prev, {
         role: 'assistant',
         content: "Sorry, I couldn't reach the AI service just now. Please try again, or email Sayan directly at sayanbanerjee024@gmail.com."
       }]);
     } finally {
-      setIsLoading(false);
+      if (conversationId === conversationIdRef.current) setIsLoading(false);
     }
   };
 
   const handleSendMessage = (e) => {
     e?.preventDefault();
     sendMessage(inputValue);
+  };
+
+  // Closing the chat ends the conversation: send the summary now and start fresh next time
+  const handleClose = () => {
+    sendSummary(false);
+    lastSummaryRef.current = '';
+    conversationIdRef.current += 1;
+    setIsLoading(false);
+    setIsOpen(false);
+    setMessages(INITIAL_MESSAGES);
+    setVisitor(null);
+    setLeadDismissed(false);
+    setLeadForm({ name: '', email: '' });
+    setInputValue('');
   };
 
   const handleLeadSubmit = (e) => {
@@ -323,7 +345,7 @@ const ChatAssistant = () => {
                   <p className="chat-status"><span className="chat-status-dot"></span>Online · answers from his CV</p>
                 </div>
               </div>
-              <button className="close-btn" onClick={() => setIsOpen(false)} aria-label="Close chat">
+              <button className="close-btn" onClick={handleClose} aria-label="Close chat">
                 <X size={20} />
               </button>
             </div>
