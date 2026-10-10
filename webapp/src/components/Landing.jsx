@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { Mail, Database, Terminal, BarChart2 } from 'lucide-react';
-import Hero3D from './Hero3D';
+import HeroPipeline from './HeroPipeline';
 import './Landing.css';
 
 const Github = ({ className }) => (
@@ -150,7 +150,7 @@ const Landing = () => {
 
         {/* Right Side: Visuals */}
         <div className="landing-visuals">
-          <Hero3D />
+          <HeroPipeline />
         </div>
       </motion.div>
     </section>
