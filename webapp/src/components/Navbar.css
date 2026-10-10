@@ -3,60 +3,68 @@
   top: 0;
   left: 0;
   right: 0;
-  height: 80px;
+  height: var(--nav-height);
   display: flex;
   align-items: center;
   z-index: 1000;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   background: transparent;
+  border-bottom: 1px solid transparent;
+  transition: background-color var(--transition-base), border-color var(--transition-base),
+    box-shadow var(--transition-base);
 }
 
 .navbar.scrolled {
-  height: 70px;
   background: var(--glass-bg);
-  border-bottom: 1px solid var(--glass-border);
-  border-radius: 0;
+  border-bottom-color: var(--border-color);
   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
 }
 
 .navbar-container {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  width: 100%;
 }
 
 .logo {
-  font-size: 1.8rem;
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  font-size: 1.7rem;
   font-weight: 800;
+  line-height: 1;
   color: var(--text-primary);
   text-decoration: none;
   letter-spacing: 1px;
   background: linear-gradient(to right, #fff, var(--text-secondary));
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
 .nav-links {
   display: flex;
-  gap: 2rem;
+  align-items: center;
+  gap: clamp(1.1rem, 2.2vw, 2rem);
   list-style: none;
 }
 
 .nav-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
   color: var(--text-secondary);
   text-decoration: none;
   font-size: 0.95rem;
   font-weight: 500;
-  transition: color 0.3s ease;
+  transition: color var(--transition-base);
   position: relative;
-  padding: 0.5rem 0;
 }
 
-.nav-link:hover {
-  color: var(--accent-color);
+.nav-link:hover,
+.nav-link.active {
+  color: var(--text-primary);
 }
 
 .nav-link::after {
@@ -64,72 +72,75 @@
   position: absolute;
   width: 0;
   height: 2px;
-  bottom: 0;
+  bottom: 8px;
   left: 0;
   background-color: var(--accent-color);
-  transition: width 0.3s ease;
+  transition: width var(--transition-base);
   border-radius: 2px;
 }
 
-.nav-link:hover::after {
+.nav-link:hover::after,
+.nav-link.active::after {
   width: 100%;
 }
 
 .mobile-toggle {
   display: none;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  margin-right: -8px;
   color: var(--text-primary);
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  padding: 0.5rem;
+  border-radius: var(--radius-sm);
   z-index: 1001;
 }
 
 .mobile-drawer {
   position: fixed;
-  top: 70px; /* Below scrolled navbar */
+  top: var(--nav-height);
   left: 0;
   right: 0;
-  background: rgba(10, 10, 10, 0.95);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
+  max-height: calc(100dvh - var(--nav-height));
+  overflow-y: auto;
+  background: #0a0a0a;
   z-index: 999;
-  padding: 2rem;
-  border-radius: 0 0 24px 24px;
-  border-top: none;
-  border-left: 1px solid var(--glass-border);
-  border-right: 1px solid var(--glass-border);
-  border-bottom: 1px solid var(--glass-border);
+  padding: var(--space-4) var(--gutter) var(--space-6);
+  border-bottom: 1px solid var(--border-color);
+  border-radius: 0 0 var(--radius-xl) var(--radius-xl);
 }
 
 .mobile-nav-links {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
   list-style: none;
-  text-align: center;
 }
 
 .mobile-nav-link {
+  display: flex;
+  align-items: center;
+  min-height: 52px;
+  padding: 0 var(--space-3);
   color: var(--text-primary);
   text-decoration: none;
-  font-size: 1.25rem;
+  font-size: 1.1rem;
   font-weight: 600;
-  display: inline-block;
-  padding: 0.5rem;
-  transition: color 0.3s ease;
+  border-radius: var(--radius-sm);
+  transition: color var(--transition-base), background-color var(--transition-base);
 }
 
-.mobile-nav-link:hover {
+.mobile-nav-link:hover,
+.mobile-nav-link.active {
   color: var(--accent-color);
+  background: var(--accent-light);
 }
 
-@media (max-width: 768px) {
+@media (max-width: 900px) {
   .desktop-nav {
     display: none;
   }
-  
+
   .mobile-toggle {
-    display: block;
+    display: inline-flex;
   }
 }

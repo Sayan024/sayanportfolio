@@ -1,4 +1,3 @@
-import React from 'react';
 import { motion } from 'framer-motion';
 import { ExternalLink } from 'lucide-react';
 import './Projects.css';
@@ -24,8 +23,9 @@ const projects = [
     tag: 'Power BI',
     image: 'dine360.png',
     url: 'https://github.com/Sayan024/powerbiprojects/tree/Dine360RestuarantAnalysis',
-    description:
-      'Multi-unit restaurant operators lacked visibility into dining ticket quality and store sales variations. Modeled a Star Schema with dynamic DAX time-intelligence (MTD, YTD, YoY) and Category Share % metrics, helping management optimize menu pricing, reduce food waste, and reallocate store staffing resources.'
+    problem: 'Multi-unit restaurant operators lacked visibility into dining ticket quality and store sales variations.',
+    solution: 'Modeled a Star Schema with dynamic DAX time-intelligence (MTD, YTD, YoY) and Category Share % metrics.',
+    outcome: 'Helps management optimize menu pricing, reduce food waste, and reallocate store staffing resources.'
   },
   {
     id: 2,
@@ -33,8 +33,9 @@ const projects = [
     tag: 'Power BI',
     image: 'shoperkart.png',
     url: 'https://github.com/Sayan024/powerbiprojects/tree/Shoperkart',
-    description:
-      'Regional sales leaders struggled to evaluate daily transactions against monthly target quotas while unmonitored discounting eroded margins. Architected a Galaxy Schema with target-variance metrics and RANKX algorithms to flag quota deficits early and protect gross profit margins.'
+    problem: 'Regional sales leaders struggled to evaluate daily transactions against monthly target quotas while unmonitored discounting eroded margins.',
+    solution: 'Architected a Galaxy Schema with target-variance metrics and RANKX algorithms.',
+    outcome: 'Flags quota deficits early and helps protect gross profit margins.'
   },
   {
     id: 3,
@@ -42,9 +43,16 @@ const projects = [
     tag: 'Power BI',
     image: 'volt.png',
     url: 'https://github.com/Sayan024/powerbiprojects/tree/VoltSalesDashboard',
-    description:
-      'Unmonitored product refund surges and shipping delays caused customer churn. Built a multi-page Power BI dashboard tracking cohort retention (New vs. Returning) and return logistics metrics, enabling operations teams to isolate defective product batches and courier bottlenecks.'
+    problem: 'Unmonitored product refund surges and shipping delays caused customer churn.',
+    solution: 'Built a multi-page Power BI dashboard tracking cohort retention (New vs. Returning) and return logistics metrics.',
+    outcome: 'Enables operations teams to isolate defective product batches and courier bottlenecks.'
   }
+];
+
+const projectFacts = [
+  { key: 'problem', label: 'Problem' },
+  { key: 'solution', label: 'Solution' },
+  { key: 'outcome', label: 'Value' }
 ];
 
 const containerVariants = {
@@ -65,7 +73,7 @@ const Projects = () => {
     <section id="projects" className="section projects-section">
       <div className="container">
         <motion.div
-          className="section-header text-center"
+          className="section-header"
           initial={{ opacity: 0, y: -20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: '-100px' }}
@@ -78,9 +86,10 @@ const Projects = () => {
             href={MAIN_REPO_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className="repo-link-btn"
+            className="btn btn--secondary repo-link-btn"
           >
-            <GithubIcon size={16} /> Main Repository <ExternalLink size={14} />
+            <GithubIcon size={16} /> Main Repository <ExternalLink size={14} aria-hidden="true" />
+            <span className="sr-only">(opens in a new tab)</span>
           </a>
         </motion.div>
 
@@ -92,24 +101,40 @@ const Projects = () => {
           viewport={{ once: true, margin: '-50px' }}
         >
           {projects.map((project) => (
-            <motion.div key={project.id} className="project-card glass-card" variants={cardVariants}>
+            <motion.article key={project.id} className="project-card glass-card" variants={cardVariants}>
               <div className="project-media">
-                <img src={`/projects/${project.image}`} alt={project.title} className="project-img" />
+                <img
+                  src={`/projects/${project.image}`}
+                  alt={`${project.title} dashboard`}
+                  className="project-img"
+                  width="1919"
+                  height="1011"
+                  loading="lazy"
+                  decoding="async"
+                />
               </div>
-              <div className="project-card-header">
-                <span className="project-tag">{project.tag}</span>
+              <div className="project-body">
+                <span className="tag">{project.tag}</span>
                 <h3 className="project-title">{project.title}</h3>
+                <dl className="project-facts">
+                  {projectFacts.map((fact) => (
+                    <div key={fact.key} className="project-fact">
+                      <dt>{fact.label}</dt>
+                      <dd>{project[fact.key]}</dd>
+                    </div>
+                  ))}
+                </dl>
+                <a
+                  href={project.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn btn--accent project-link"
+                >
+                  <GithubIcon size={14} /> View Branch <ExternalLink size={12} aria-hidden="true" />
+                  <span className="sr-only">for {project.title} (opens in a new tab)</span>
+                </a>
               </div>
-              <p className="project-description">{project.description}</p>
-              <a
-                href={project.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="btn-primary project-link"
-              >
-                <GithubIcon size={14} /> View Branch <ExternalLink size={12} />
-              </a>
-            </motion.div>
+            </motion.article>
           ))}
         </motion.div>
       </div>

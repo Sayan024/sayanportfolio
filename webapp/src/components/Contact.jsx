@@ -1,15 +1,33 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Mail, MapPin, Send, MessageSquare } from 'lucide-react';
+import { Github, Linkedin } from './SocialIcons';
 import './Contact.css';
 
-const Github = ({ size = 24, className }) => (
-  <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-7-2"/></svg>
-);
+const CONTACT_EMAIL = 'sayanbanerjee024@gmail.com';
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-const Linkedin = ({ size = 24, className }) => (
-  <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect width="4" height="12" x="2" y="9"/><circle cx="4" cy="4" r="2"/></svg>
-);
+const fields = [
+  { name: 'name', label: 'Full Name', type: 'text', autoComplete: 'name', half: true },
+  { name: 'email', label: 'Email Address', type: 'email', autoComplete: 'email', half: true },
+  { name: 'subject', label: 'Subject', type: 'text', autoComplete: 'off' },
+  { name: 'message', label: 'Message', multiline: true }
+];
+
+const validate = (data) => {
+  const errors = {};
+  if (!data.name.trim()) errors.name = 'Please enter your name.';
+  if (!data.email.trim()) errors.email = 'Please enter your email address.';
+  else if (!EMAIL_PATTERN.test(data.email.trim())) errors.email = 'Please enter a valid email address.';
+  if (!data.subject.trim()) errors.subject = 'Please add a subject.';
+  if (!data.message.trim()) errors.message = 'Please write a message.';
+  return errors;
+};
+
+const fadeUpVariants = {
+  hidden: { opacity: 0, y: 30 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } }
+};
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -18,28 +36,68 @@ const Contact = () => {
     subject: '',
     message: ''
   });
-
+  const [errors, setErrors] = useState({});
   const [focusedField, setFocusedField] = useState(null);
+  const [status, setStatus] = useState('');
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+    if (errors[name]) setErrors({ ...errors, [name]: undefined });
   };
 
+  // There is no mail server behind this form: it hands the message to the visitor's own email app
   const handleSubmit = (e) => {
     e.preventDefault();
-    window.location.href = `mailto:sayanbanerjee024@gmail.com?subject=${encodeURIComponent(formData.subject)}&body=${encodeURIComponent("Name: " + formData.name + "\n\n" + formData.message)}`;
+    const foundErrors = validate(formData);
+    setErrors(foundErrors);
+
+    const firstInvalid = Object.keys(foundErrors)[0];
+    if (firstInvalid) {
+      setStatus('Please fix the highlighted fields.');
+      document.getElementById(`contact-${firstInvalid}`)?.focus();
+      return;
+    }
+
+    const body = `Name: ${formData.name.trim()}\nEmail: ${formData.email.trim()}\n\n${formData.message.trim()}`;
+    window.location.href = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(formData.subject.trim())}&body=${encodeURIComponent(body)}`;
+    setStatus(`Your email app should now open with this message ready to send. If it doesn't, email ${CONTACT_EMAIL} directly.`);
   };
 
-  const fadeUpVariants = {
-    hidden: { opacity: 0, y: 30 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } }
+  const renderField = (field) => {
+    const id = `contact-${field.name}`;
+    const error = errors[field.name];
+    const isActive = focusedField === field.name || formData[field.name];
+    const sharedProps = {
+      id,
+      name: field.name,
+      value: formData[field.name],
+      onChange: handleChange,
+      onFocus: () => setFocusedField(field.name),
+      onBlur: () => setFocusedField(null),
+      required: true,
+      'aria-invalid': error ? 'true' : undefined,
+      'aria-describedby': error ? `${id}-error` : undefined
+    };
+
+    return (
+      <div key={field.name} className={`form-group ${isActive ? 'active' : ''} ${error ? 'has-error' : ''}`}>
+        <label htmlFor={id}>{field.label}</label>
+        {field.multiline ? (
+          <textarea rows="4" {...sharedProps}></textarea>
+        ) : (
+          <input type={field.type} autoComplete={field.autoComplete} {...sharedProps} />
+        )}
+        {error && <p className="form-error" id={`${id}-error`}>{error}</p>}
+      </div>
+    );
   };
 
   return (
     <section id="contact" className="section contact-section">
       <div className="container">
-        <motion.div 
-          className="section-header center"
+        <motion.div
+          className="section-header"
           initial={{ opacity: 0, y: -20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-100px" }}
@@ -47,52 +105,58 @@ const Contact = () => {
           <h2 className="section-title">Let's Build Something <span>Great</span></h2>
           <p className="section-subtitle">Have a data challenge? Let's talk about it.</p>
         </motion.div>
-        
+
         <div className="contact-grid">
-          <motion.div 
-            className="contact-info-wrapper"
+          <motion.div
             variants={fadeUpVariants}
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
           >
             <div className="contact-info-card glass-card">
-              <div className="info-badge">
-                <MessageSquare size={24} />
+              <div className="icon-box">
+                <MessageSquare size={24} aria-hidden="true" />
               </div>
               <h3>Contact Information</h3>
               <p className="contact-desc">I'm currently available for full-time opportunities or freelance consulting. Feel free to reach out.</p>
-              
-              <div className="info-list">
-                <div className="info-item">
-                  <div className="info-icon"><Mail size={20} /></div>
+
+              <ul className="info-list">
+                <li className="info-item">
+                  <div className="info-icon"><Mail size={20} aria-hidden="true" /></div>
                   <div className="info-text">
                     <span className="info-label">Email</span>
-                    <a href="mailto:sayanbanerjee024@gmail.com" className="info-value">sayanbanerjee024@gmail.com</a>
+                    <a href={`mailto:${CONTACT_EMAIL}`} className="info-value">{CONTACT_EMAIL}</a>
                   </div>
-                </div>
-                
-                <div className="info-item">
-                  <div className="info-icon"><MapPin size={20} /></div>
+                </li>
+
+                <li className="info-item">
+                  <div className="info-icon"><MapPin size={20} aria-hidden="true" /></div>
                   <div className="info-text">
                     <span className="info-label">Location</span>
                     <span className="info-value">Kolkata, India</span>
                   </div>
-                </div>
+                </li>
 
-                <div className="info-item">
+                <li className="info-item">
                   <div className="info-icon"><Linkedin size={20} /></div>
                   <div className="info-text">
                     <span className="info-label">LinkedIn</span>
-                    <a href="https://linkedin.com/in/sayanbanerjee24" target="_blank" rel="noreferrer" className="info-value">in/sayanbanerjee24</a>
+                    <a href="https://linkedin.com/in/sayanbanerjee24" target="_blank" rel="noopener noreferrer" className="info-value">in/sayanbanerjee24</a>
                   </div>
-                </div>
-              </div>
+                </li>
+
+                <li className="info-item">
+                  <div className="info-icon"><Github size={20} /></div>
+                  <div className="info-text">
+                    <span className="info-label">GitHub</span>
+                    <a href="https://github.com/sayan024" target="_blank" rel="noopener noreferrer" className="info-value">github.com/sayan024</a>
+                  </div>
+                </li>
+              </ul>
             </div>
           </motion.div>
 
-          <motion.div 
-            className="contact-form-wrapper"
+          <motion.div
             variants={fadeUpVariants}
             initial="hidden"
             whileInView="visible"
@@ -100,79 +164,23 @@ const Contact = () => {
           >
             <div className="contact-form-card glass-card">
               <h3>Send a Message</h3>
-              <form onSubmit={handleSubmit} className="premium-form">
+              <form onSubmit={handleSubmit} noValidate>
                 <div className="form-row">
-                  <div className={`form-group ${focusedField === 'name' || formData.name ? 'active' : ''}`}>
-                    <label>Full Name</label>
-                    <input 
-                      type="text" name="name" value={formData.name}
-                      onChange={handleChange}
-                      onFocus={() => setFocusedField('name')}
-                      onBlur={() => setFocusedField(null)}
-                      required
-                    />
-                    <div className="focus-border"></div>
-                  </div>
-                  
-                  <div className={`form-group ${focusedField === 'email' || formData.email ? 'active' : ''}`}>
-                    <label>Email Address</label>
-                    <input 
-                      type="email" name="email" value={formData.email}
-                      onChange={handleChange}
-                      onFocus={() => setFocusedField('email')}
-                      onBlur={() => setFocusedField(null)}
-                      required
-                    />
-                    <div className="focus-border"></div>
-                  </div>
+                  {fields.filter((field) => field.half).map(renderField)}
                 </div>
-                
-                <div className={`form-group ${focusedField === 'subject' || formData.subject ? 'active' : ''}`}>
-                  <label>Subject</label>
-                  <input 
-                    type="text" name="subject" value={formData.subject}
-                    onChange={handleChange}
-                    onFocus={() => setFocusedField('subject')}
-                    onBlur={() => setFocusedField(null)}
-                    required
-                  />
-                  <div className="focus-border"></div>
-                </div>
-                
-                <div className={`form-group textarea-group ${focusedField === 'message' || formData.message ? 'active' : ''}`}>
-                  <label>Message</label>
-                  <textarea 
-                    name="message" value={formData.message}
-                    onChange={handleChange}
-                    onFocus={() => setFocusedField('message')}
-                    onBlur={() => setFocusedField(null)}
-                    rows="4" required
-                  ></textarea>
-                  <div className="focus-border"></div>
-                </div>
+                {fields.filter((field) => !field.half).map(renderField)}
 
-                <button type="submit" className="submit-btn">
+                <button type="submit" className="btn btn--primary btn--lg btn--block">
                   <span>Send Message</span>
-                  <Send size={18} />
-                  <div className="btn-sweep"></div>
+                  <Send size={18} aria-hidden="true" />
                 </button>
+                <p className="form-note">This opens your email app with the message filled in.</p>
+                <p className="form-status" role="status" aria-live="polite">{status}</p>
               </form>
             </div>
           </motion.div>
         </div>
       </div>
-
-      <footer className="footer glass-card">
-        <div className="container footer-content">
-          <div className="footer-logo">SB</div>
-          <p className="tagline">Building scalable data foundations.</p>
-          <div className="footer-socials">
-            <a href="https://github.com/sayan024" target="_blank" rel="noreferrer"><Github size={20} /></a>
-            <a href="https://linkedin.com/in/sayanbanerjee24" target="_blank" rel="noreferrer"><Linkedin size={20} /></a>
-            <a href="mailto:sayanbanerjee024@gmail.com"><Mail size={20} /></a>
-          </div>
-        </div>
-      </footer>
     </section>
   );
 };

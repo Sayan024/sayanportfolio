@@ -2,10 +2,10 @@
 
 .chat-toggle-btn {
   position: fixed;
-  bottom: 12px;
-  right: 16px;
-  width: 150px;
-  height: 136px;
+  bottom: max(12px, env(safe-area-inset-bottom));
+  right: max(12px, env(safe-area-inset-right));
+  width: 116px;
+  height: 106px;
   padding: 0;
   background: transparent;
   border: none;
@@ -32,9 +32,9 @@
 
 .chat-toggle-bubble {
   position: absolute;
-  left: 2px;
+  left: 0;
   top: 0;
-  width: 66px;
+  width: 52px;
   height: auto;
   filter: drop-shadow(0 4px 12px var(--accent-glow));
   animation: chat-bubble-float 2.4s ease-in-out infinite;
@@ -98,7 +98,7 @@
   object-fit: contain;
 }
 
-.chat-header h3 {
+.chat-header h2 {
   margin: 0;
   font-size: 16px;
   font-weight: 600;
@@ -462,31 +462,42 @@
   transform: scale(1.05);
 }
 
-/* Mobile Responsiveness */
-@media (max-width: 768px) {
+/* Wide screens have spare margin beside the content column, so the launcher can be larger */
+@media (min-width: 1560px) {
   .chat-toggle-btn {
-    right: 8px;
-    bottom: 8px;
-    width: 106px;
-    height: 96px;
-    z-index: 9999;
+    width: 150px;
+    height: 136px;
   }
 
   .chat-toggle-bubble {
-    width: 46px;
+    width: 66px;
+  }
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+  .chat-toggle-btn {
+    right: max(6px, env(safe-area-inset-right));
+    bottom: max(6px, env(safe-area-inset-bottom));
+    width: 82px;
+    height: 74px;
+  }
+
+  .chat-toggle-bubble {
+    width: 36px;
   }
 
   .chat-window {
     /* Pin to bottom of screen, grow upward only */
     position: fixed;
-    bottom: 12px;
+    bottom: max(12px, env(safe-area-inset-bottom));
     top: auto;
     left: 12px;
     right: 12px;
     width: auto;
     /* Limit height so it never reaches top of screen */
-    height: min(520px, calc(100dvh - 100px));
-    max-height: calc(100dvh - 100px);
+    height: min(560px, calc(100dvh - 24px));
+    max-height: calc(100dvh - 24px);
     border-radius: 16px;
     z-index: 9999;
   }

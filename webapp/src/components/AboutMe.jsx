@@ -1,23 +1,22 @@
-import React from 'react';
 import { motion } from 'framer-motion';
 import { Briefcase, GraduationCap, Code, Star, Award } from 'lucide-react';
 import './AboutMe.css';
 
 const AboutMe = () => {
   const imageVariants = {
-    hidden: { x: -100, opacity: 0, boxShadow: "0 0 0 rgba(245, 158, 11, 0)" },
+    hidden: { x: -40, opacity: 0, boxShadow: "0 0 0 rgba(245, 158, 11, 0)" },
     visible: { 
       x: 0, 
       opacity: 1, 
-      boxShadow: "0 0 40px rgba(245, 158, 11, 0.3)",
+      boxShadow: "0 0 32px rgba(245, 158, 11, 0.18)",
       transition: { duration: 0.8, ease: "easeOut" }
     }
   };
 
   const cardVariants = {
-    hidden: { rotateY: 90, opacity: 0 },
+    hidden: { y: 30, opacity: 0 },
     visible: (custom) => ({
-      rotateY: 0,
+      y: 0,
       opacity: 1,
       transition: { 
         duration: 0.8, 
@@ -54,7 +53,9 @@ const AboutMe = () => {
   return (
     <section id="about" className="section about-section">
       <div className="container">
-        <h2 className="section-title">About <span>Me</span></h2>
+        <div className="section-header">
+          <h2 className="section-title">About <span>Me</span></h2>
+        </div>
         
         <div className="about-content">
           <div className="about-left">
@@ -65,7 +66,7 @@ const AboutMe = () => {
               whileInView="visible"
               viewport={{ once: true, margin: "-100px" }}
             >
-              <img src="/profile.png" alt="Sayan Banerjee" className="profile-img" />
+              <img src="/profile.png" alt="Portrait of Sayan Banerjee" className="profile-img" width="340" height="340" loading="lazy" decoding="async" />
             </motion.div>
 
             <motion.div 
@@ -86,7 +87,7 @@ const AboutMe = () => {
                       className="work-btn"
                       variants={buttonVariants}
                     >
-                      <Icon className="work-icon" />
+                      <Icon className="work-icon" aria-hidden="true" />
                       <span>{link.name}</span>
                     </motion.a>
                   );
@@ -115,8 +116,8 @@ const AboutMe = () => {
                 whileInView="visible"
                 viewport={{ once: true, margin: "-50px" }}
               >
-                <div className="mv-icon"><Star /></div>
-                <h4>Mission</h4>
+                <div className="icon-box"><Star aria-hidden="true" /></div>
+                <h3>Mission</h3>
                 <p>To build scalable analytics systems that simplify decision-making and transform data into measurable business value.</p>
               </motion.div>
 
@@ -128,8 +129,8 @@ const AboutMe = () => {
                 whileInView="visible"
                 viewport={{ once: true, margin: "-50px" }}
               >
-                <div className="mv-icon"><Award /></div>
-                <h4>Vision</h4>
+                <div className="icon-box"><Award aria-hidden="true" /></div>
+                <h3>Vision</h3>
                 <p>To become a leading Data Engineering and Analytics professional creating intelligent enterprise solutions at scale.</p>
               </motion.div>
             </div>

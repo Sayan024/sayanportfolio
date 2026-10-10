@@ -1,52 +1,30 @@
 .capabilities-section {
-  padding: 100px 0;
-  position: relative;
   overflow: hidden;
-}
-
-.text-center {
-  text-align: center;
-  margin-bottom: 4rem;
-}
-
-.section-subtitle {
-  color: var(--text-secondary, #9ca3af);
-  font-size: 1.1rem;
-  margin-top: 0.8rem;
-  max-width: 650px;
-  margin-left: auto;
-  margin-right: auto;
-  line-height: 1.6;
 }
 
 .capabilities-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
-  gap: 2.5rem;
-  max-width: 1200px;
-  margin: 0 auto;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-5);
 }
 
 /* Capability Card Layout */
 .cap-card {
   display: flex;
   flex-direction: column;
-  border-radius: 20px;
-  background: rgba(17, 24, 39, 0.6);
-  border: 1px solid rgba(245, 158, 11, 0.15);
   overflow: hidden;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  backdrop-filter: blur(12px);
+  transition: border-color var(--transition-base), box-shadow var(--transition-base);
 }
 
 .cap-card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 15px 35px rgba(0,0,0,0.4), inset 0 0 0 1px rgba(245, 158, 11, 0.3);
+  border-color: var(--accent-border);
+  box-shadow: var(--shadow-card-hover);
 }
 
 /* Visual Header Area */
 .cap-visual-wrapper {
-  height: 160px;
+  height: 140px;
+  flex-shrink: 0;
   background: linear-gradient(180deg, rgba(245, 158, 11, 0.05) 0%, rgba(0, 0, 0, 0.4) 100%);
   border-bottom: 1px solid rgba(255,255,255,0.05);
   display: flex;
@@ -57,52 +35,56 @@
 }
 
 .cap-content {
-  padding: 2.5rem;
+  padding: clamp(1.5rem, 3vw, 2rem);
   flex: 1;
   display: flex;
   flex-direction: column;
 }
 
+/* Title and description reserve two lines each, so the chip groups start level across a row */
 .cap-title {
-  font-size: 1.1rem;
+  font-size: 1rem;
   font-weight: 700;
-  letter-spacing: 1.5px;
-  color: var(--accent-color, #f59e0b);
-  margin-bottom: 0.8rem;
+  line-height: 1.35;
+  letter-spacing: 0.08em;
+  color: var(--accent-color);
+  margin-bottom: var(--space-3);
   text-transform: uppercase;
+  min-height: 2.7em;
 }
 
 .cap-desc {
   font-size: 0.95rem;
-  color: #d1d5db;
-  line-height: 1.5;
-  margin-bottom: 2rem;
-  flex-grow: 1;
+  color: var(--text-secondary);
+  line-height: 1.55;
+  margin-bottom: var(--space-5);
+  min-height: 3.1em;
 }
 
 /* Technology Chips */
 .cap-tech-chips {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.6rem;
+  align-content: flex-start;
+  gap: var(--space-2);
+  list-style: none;
 }
 
 .tech-chip {
-  background: rgba(245, 158, 11, 0.08);
-  border: 1px solid rgba(245, 158, 11, 0.2);
-  color: #e5e7eb;
-  padding: 6px 14px;
-  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  padding: 6px 12px;
+  border-radius: var(--radius-pill);
   font-size: 0.8rem;
   font-weight: 500;
-  transition: all 0.2s ease;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  line-height: 1.3;
+  transition: border-color var(--transition-fast), background-color var(--transition-fast);
 }
 
 .cap-card:hover .tech-chip {
-  background: rgba(245, 158, 11, 0.15);
-  border-color: rgba(245, 158, 11, 0.4);
-  transform: translateY(-1px);
+  background: var(--accent-light);
+  border-color: var(--accent-border);
 }
 
 /* --- ANIMATED VISUALS --- */
@@ -329,14 +311,20 @@
   100% { opacity: 1; }
 }
 
-/* Mobile Responsiveness */
-@media (max-width: 768px) {
+/* Responsive grid: three, two, then one column */
+@media (max-width: 1100px) {
+  .capabilities-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 680px) {
   .capabilities-grid {
     grid-template-columns: 1fr;
-    padding: 0 1rem;
   }
-  
-  .cap-content {
-    padding: 2rem 1.5rem;
+
+  .cap-title,
+  .cap-desc {
+    min-height: 0;
   }
 }

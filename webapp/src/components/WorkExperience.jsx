@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import { useRef } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { Building2, Calendar, CheckCircle2, ChevronRight, BarChart3, Database, Cloud } from 'lucide-react';
 import './WorkExperience.css';
@@ -97,59 +97,59 @@ const WorkExperience = () => {
   return (
     <section id="experience" className="section experience-section">
       <div className="container">
-        <motion.div 
-          className="section-header text-center"
+        <motion.div
+          className="section-header"
           initial={{ opacity: 0, y: -20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-100px" }}
+          viewport={{ once: true, margin: "-100px 0px" }}
         >
           <h2 className="section-title">Career Growth <span>Journey</span></h2>
           <p className="section-subtitle">My professional progression and learning phases at Embee Software.</p>
         </motion.div>
-        
+
         {/* Main Company Card */}
-        <motion.div 
+        <motion.div
           className="main-role-card glass-card"
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-100px" }}
+          viewport={{ once: true, margin: "-100px 0px" }}
           transition={{ duration: 0.6 }}
         >
           <div className="exp-header">
             <div className="exp-company-info">
               <div className="company-logo-ph accent-glow">
-                <Building2 size={28} />
+                <Building2 size={28} aria-hidden="true" />
               </div>
               <div>
                 <h3 className="exp-role">{currentRole.role}</h3>
-                <h4 className="exp-company">{currentRole.company}</h4>
+                <p className="exp-company">{currentRole.company}</p>
               </div>
             </div>
             <div className="exp-meta">
               <span className="badge type-badge">{currentRole.type}</span>
-              <span className="date-badge"><Calendar size={14}/> {currentRole.duration}</span>
+              <span className="date-badge"><Calendar size={14} aria-hidden="true" /> {currentRole.duration}</span>
             </div>
           </div>
 
           <div className="exp-body main-card-body">
             <div className="resp-col">
-              <h5 className="sub-heading">Key Responsibilities</h5>
+              <h4 className="sub-heading">Key Responsibilities</h4>
               <ul className="custom-list">
                 {currentRole.responsibilities.map((resp, idx) => (
                   <li key={idx}>
-                    <ChevronRight className="list-icon" size={16} />
+                    <ChevronRight className="list-icon" size={16} aria-hidden="true" />
                     <span>{resp}</span>
                   </li>
                 ))}
               </ul>
             </div>
-            
+
             <div className="achieve-col">
-              <h5 className="sub-heading highlight-heading">Impact & Achievements</h5>
+              <h4 className="sub-heading highlight-heading">Impact & Achievements</h4>
               <ul className="custom-list highlight-list">
                 {currentRole.achievements.map((ach, idx) => (
                   <li key={idx}>
-                    <CheckCircle2 className="list-icon-highlight" size={18} />
+                    <CheckCircle2 className="list-icon-highlight" size={18} aria-hidden="true" />
                     <span>{ach}</span>
                   </li>
                 ))}
@@ -160,7 +160,7 @@ const WorkExperience = () => {
 
         {/* Growth Phases Timeline */}
         <div className="growth-timeline-wrapper" ref={containerRef}>
-          <div className="timeline-track">
+          <div className="timeline-track" aria-hidden="true">
             <motion.div className="timeline-progress" style={{ height: lineHeight }} />
           </div>
 
@@ -169,7 +169,7 @@ const WorkExperience = () => {
               const isEven = index % 2 !== 0;
               return (
                 <div key={phase.id} className={`phase-row ${isEven ? 'row-even' : 'row-odd'}`}>
-                  
+
                   {/* Left Side */}
                   <div className="phase-half phase-left">
                     {!isEven && (
@@ -178,12 +178,12 @@ const WorkExperience = () => {
                   </div>
 
                   {/* Center Node */}
-                  <div className="phase-node-container">
-                    <motion.div 
+                  <div className="phase-node-container" aria-hidden="true">
+                    <motion.div
                       className={`phase-node ${phase.colorClass}`}
                       initial={{ scale: 0, opacity: 0 }}
                       whileInView={{ scale: 1, opacity: 1 }}
-                      viewport={{ once: true, margin: "-100px" }}
+                      viewport={{ once: true, margin: "-100px 0px" }}
                       transition={{ type: "spring", bounce: 0.5, delay: 0.2 }}
                     >
                       {phase.icon}
@@ -196,7 +196,7 @@ const WorkExperience = () => {
                       <PhaseCard phase={phase} direction={50} />
                     )}
                   </div>
-                  
+
                 </div>
               );
             })}
@@ -209,23 +209,23 @@ const WorkExperience = () => {
 
 const PhaseCard = ({ phase, direction }) => {
   return (
-    <motion.div 
+    <motion.div
       className={`phase-card glass-card ${phase.colorClass}-border`}
       initial={{ opacity: 0, x: direction }}
       whileInView={{ opacity: 1, x: 0 }}
-      viewport={{ once: true, margin: "-100px" }}
+      viewport={{ once: true, margin: "-100px 0px" }}
       transition={{ duration: 0.6, type: "spring", bounce: 0.3 }}
       whileHover={{ y: -5, transition: { duration: 0.2 } }}
     >
       <div className="phase-card-header">
         <span className={`phase-id ${phase.colorClass}-text`}>PHASE {phase.id}</span>
-        <h4 className="phase-title">{phase.title}</h4>
+        <h3 className="phase-title">{phase.title}</h3>
         <p className="phase-subtitle">{phase.subtitle}</p>
       </div>
 
       <div className="phase-card-body">
         <div className="phase-section">
-          <h5 className="phase-subheading">What I Worked On:</h5>
+          <h4 className="phase-subheading">What I Worked On:</h4>
           <ul className="phase-list default-list">
             {phase.workedOn.map((item, idx) => (
               <li key={idx}>
@@ -237,7 +237,7 @@ const PhaseCard = ({ phase, direction }) => {
         </div>
 
         <div className="phase-section outcomes-section">
-          <h5 className="phase-subheading">Key Outcomes:</h5>
+          <h4 className="phase-subheading">Key Outcomes:</h4>
           <ul className="phase-list outcome-list">
             {phase.outcomes.map((item, idx) => (
               <li key={idx}>

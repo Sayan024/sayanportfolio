@@ -1,35 +1,19 @@
 /* Container & Header Setup */
 .experience-section {
-  padding: 100px 0;
-  position: relative;
   overflow: hidden;
-}
-
-.text-center {
-  text-align: center;
-}
-
-.section-subtitle {
-  color: var(--text-secondary);
-  font-size: 1.1rem;
-  margin-top: 0.5rem;
-  margin-bottom: 3rem;
 }
 
 /* Main Role Card (Top) */
 .main-role-card {
   max-width: 1000px;
-  margin: 0 auto 6rem auto;
-  padding: 3rem;
+  margin: 0 auto var(--space-9);
+  padding: clamp(1.5rem, 4vw, 2.75rem);
   position: relative;
-  background: rgba(17, 24, 39, 0.6);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(12px);
-  border-radius: 24px;
+  border-radius: var(--radius-xl);
 }
 
 .main-card-body {
-  gap: 4rem;
+  gap: clamp(2rem, 4vw, 3.5rem);
 }
 
 .accent-glow {
@@ -49,7 +33,7 @@
 .timeline-track {
   position: absolute;
   top: 0;
-  bottom: -150px;
+  bottom: 0;
   left: 50%;
   transform: translateX(-50%);
   width: 4px;
@@ -72,14 +56,14 @@
 .phases-container {
   display: flex;
   flex-direction: column;
-  gap: 6rem;
+  gap: var(--space-7);
   position: relative;
   z-index: 1;
 }
 
 .phase-row {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
   width: 100%;
   position: relative;
@@ -105,6 +89,7 @@
 /* Central Node */
 .phase-node-container {
   position: absolute;
+  top: 0;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
@@ -130,30 +115,29 @@
 .phase-card {
   width: 100%;
   max-width: 480px;
-  padding: 2.5rem;
-  border-radius: 20px;
-  background: rgba(17, 24, 39, 0.7);
-  backdrop-filter: blur(10px);
-  border-top: 2px solid;
-  transition: all 0.3s ease;
+  padding: clamp(1.5rem, 3vw, 2.25rem);
+  border-radius: var(--radius-xl);
+  border-top-width: 2px;
+  transition: box-shadow var(--transition-base);
   position: relative;
 }
 
+/* Connector from the card to its node on the centre line (4rem gap minus the 28px node radius) */
 .phase-card::after {
   content: '';
   position: absolute;
-  top: 24px;
-  width: 20px;
+  top: 27px;
+  width: calc(4rem - 28px);
   height: 2px;
-  background: rgba(255,255,255,0.2);
+  background: var(--border-strong);
 }
 
 .row-odd .phase-card::after {
-  right: -20px;
+  left: 100%;
 }
 
 .row-even .phase-card::after {
-  left: -20px;
+  right: 100%;
 }
 
 /* Typography & Content within Phases */
@@ -172,8 +156,9 @@
 }
 
 .phase-title {
-  font-size: 1.5rem;
+  font-size: clamp(1.2rem, 2.2vw, 1.4rem);
   font-weight: 700;
+  line-height: 1.3;
   color: var(--text-primary);
   margin-bottom: 0.5rem;
 }
@@ -192,7 +177,7 @@
   font-size: 0.85rem;
   text-transform: uppercase;
   letter-spacing: 1px;
-  color: #9ca3af;
+  color: var(--text-secondary);
   margin-bottom: 1rem;
 }
 
@@ -265,7 +250,8 @@
 .exp-company-info {
   display: flex;
   align-items: center;
-  gap: 1.5rem;
+  gap: var(--space-4);
+  min-width: 0;
 }
 
 .company-logo-ph {
@@ -282,8 +268,9 @@
 }
 
 .exp-role {
-  font-size: 1.4rem;
+  font-size: clamp(1.15rem, 2.2vw, 1.4rem);
   font-weight: 700;
+  line-height: 1.3;
   color: var(--text-primary);
   margin-bottom: 0.3rem;
   letter-spacing: -0.3px;
@@ -361,7 +348,7 @@
 
 .list-icon {
   margin-top: 2px;
-  color: #666;
+  color: var(--text-muted);
   flex-shrink: 0;
 }
 
@@ -384,10 +371,6 @@
 }
 
 @media (max-width: 768px) {
-  .main-role-card {
-    padding: 1.5rem;
-  }
-  
   .exp-header {
     flex-direction: column;
     gap: 1.5rem;
@@ -398,7 +381,8 @@
   }
 
   .timeline-track {
-    left: 28px;
+    left: 20px;
+    width: 2px;
   }
 
   .phase-row {
@@ -411,17 +395,32 @@
   }
 
   .phase-left, .phase-right {
-    padding: 0 0 0 60px;
+    padding: 0 0 0 52px;
+  }
+
+  /* Only one half of each row holds a card */
+  .phase-half:empty {
+    display: none;
   }
 
   .phase-node-container {
-    left: 28px;
+    left: 20px;
     top: 0;
   }
 
   .phase-node {
     width: 40px;
     height: 40px;
+    border-width: 2px;
+  }
+
+  .phase-node svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .phase-card {
+    max-width: none;
   }
 
   .phase-card::after {
@@ -429,10 +428,6 @@
   }
 
   .phases-container {
-    gap: 3rem;
-  }
-  
-  .phase-card {
-    margin-top: 1rem;
+    gap: var(--space-6);
   }
 }

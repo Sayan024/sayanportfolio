@@ -1,4 +1,3 @@
-import React from 'react';
 import { motion } from 'framer-motion';
 import { Database, Cloud, Layers, LineChart } from 'lucide-react';
 import './Skills.css';
@@ -112,8 +111,8 @@ const Skills = () => {
   return (
     <section id="skills" className="section capabilities-section">
       <div className="container">
-        <motion.div 
-          className="section-header text-center"
+        <motion.div
+          className="section-header"
           initial={{ opacity: 0, y: -20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-100px" }}
@@ -121,28 +120,28 @@ const Skills = () => {
           <h2 className="section-title">Technical <span>Stack & Capabilities</span></h2>
           <p className="section-subtitle">Technologies used across analytics, reporting, and enterprise data engineering projects.</p>
         </motion.div>
-        
+
         <div className="capabilities-grid">
           {capabilities.map((cap, index) => (
-            <motion.div 
-              key={cap.id} 
+            <motion.div
+              key={cap.id}
               className="cap-card glass-card"
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-50px" }}
               transition={{ delay: index * 0.1, duration: 0.6 }}
             >
-              <div className="cap-visual-wrapper">
+              <div className="cap-visual-wrapper" aria-hidden="true">
                 {cap.visual}
               </div>
               <div className="cap-content">
                 <h3 className="cap-title">{cap.title}</h3>
                 <p className="cap-desc">{cap.description}</p>
-                <div className="cap-tech-chips">
+                <ul className="cap-tech-chips">
                   {cap.technologies.map((tech, idx) => (
-                    <span key={idx} className="tech-chip">{tech}</span>
+                    <li key={idx} className="tech-chip">{tech}</li>
                   ))}
-                </div>
+                </ul>
               </div>
             </motion.div>
           ))}

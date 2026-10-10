@@ -2,25 +2,10 @@ import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Send, Bot, User, Check } from 'lucide-react';
 import './ChatAssistant.css';
-import { resumeContext } from './resumeContext';
 
-const MODELS = [
-  // Ordered fastest-first (measured Oct 2026)
-  "nvidia/nemotron-3-super-120b-a12b:free",
-  "apodex/apodex-1.1-mini:free",
-  "nvidia/nemotron-3.5-lightning:free",
-  "google/gemma-4-31b-it:free",
-  "google/gemma-4-26b-a4b-it:free",
-  "thinkingmachines/inkling:free",
-  "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free",
-  "nvidia/nemotron-3-ultra-550b-a55b:free",
-  // Not in OpenRouter's model catalog as of Oct 2026; kept last so they don't slow down every request
-  "inception/mercury-decide:free",
-  "openai/gpt-oss-20b:free"
-];
-
-// Give up on a model that hasn't answered in this long and try the next one
-const MODEL_TIMEOUT_MS = 12000;
+// The model list, API key and system prompt live in the /api/chat serverless function
+const CHAT_ENDPOINT = '/api/chat';
+const CHAT_TIMEOUT_MS = 55000;
 
 const SUGGESTED_QUESTIONS = [
   "How many years of experience?",
@@ -33,45 +18,6 @@ const SUGGESTED_QUESTIONS = [
 const SUMMARY_IDLE_MS = 2 * 60 * 1000;
 const SUMMARY_ENDPOINT = '/api/chat-summary';
 const MIN_USER_MESSAGES_FOR_SUMMARY = 2;
-
-// Sayan's first (and current) professional role started in Dec 2024
-const CAREER_START = new Date(2024, 11, 1);
-
-const getExperienceText = () => {
-  const now = new Date();
-  const months = (now.getFullYear() - CAREER_START.getFullYear()) * 12 + (now.getMonth() - CAREER_START.getMonth());
-  const years = Math.floor(months / 12);
-  const rem = months % 12;
-  const parts = [];
-  if (years) parts.push(`${years} year${years > 1 ? 's' : ''}`);
-  if (rem) parts.push(`${rem} month${rem > 1 ? 's' : ''}`);
-  return parts.join(' ') || 'less than a month';
-};
-
-const buildSystemPrompt = () => {
-  const today = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
-  return `You are the AI assistant on Sayan Banerjee's portfolio website. Visitors are mostly recruiters and hiring managers.
-Answer questions about Sayan's skills, experience, projects, certifications, target roles, and career expectations using ONLY the CV context below.
-
-Today's date: ${today}
-Total professional experience: about ${getExperienceText()} (all at Embee Software, Dec 2024 to present). Use this when asked about years of experience.
-
-ANSWER STYLE (follow strictly):
-- Answer the exact question first, in the first sentence. Short follow-ups like "in years?" refer to the previous question.
-- Be concise: 1 to 3 short sentences, or at most 5 short bullet points for lists. Never write long paragraphs.
-- Use "- " bullets for lists and **bold** only for a few key terms. No headings, no tables.
-- No filler openings or closings. Do not offer the email address unless the answer is not in the CV.
-- Never invent facts, employers, numbers, or history that are not in the CV context.
-
-RULES:
-- Salary or job search status: Sayan is actively looking for Data Analyst or Data Engineer roles, expecting around ₹9 LPA.
-- Projects or dashboards: name the relevant project(s) and ALWAYS include the GitHub link(s) from the CV context.
-- If the question is not answered by the CV, is a complex technical question, or asks you to build something: say briefly that you don't have that information and suggest emailing Sayan at sayanbanerjee024@gmail.com.
-
---- CV CONTEXT ---
-${resumeContext}
-`;
-};
 
 const INLINE_PATTERN = /(\*\*[^*]+\*\*|\[[^\]]+\]\(https?:\/\/[^\s)]+\)|https?:\/\/[^\s)]+|[\w.+-]+@[\w-]+(?:\.[\w-]+)+)/g;
 const BULLET_PATTERN = /^\s*(?:[-*•]|\d+[.)])\s+/;
@@ -146,6 +92,8 @@ const ChatAssistant = () => {
   const [leadForm, setLeadForm] = useState({ name: '', email: '' });
 
   const messagesEndRef = useRef(null);
+  const inputRef = useRef(null);
+  const launcherRef = useRef(null);
   const messagesRef = useRef(messages);
   const visitorRef = useRef(visitor);
   const lastSummaryRef = useRef('');
@@ -215,57 +163,21 @@ const ChatAssistant = () => {
     setIsLoading(true);
 
     try {
-      const apiKey = import.meta.env.VITE_OPENROUTER_API_KEY;
-
-      // Prepare messages for the API (including system prompt)
-      const apiMessages = [
-        { role: 'system', content: buildSystemPrompt() },
-        ...newMessages.map(m => ({ role: m.role, content: m.content }))
-      ];
-
-      // Model routing: try each model in order, moving to the next on any failure
-      let assistantMessage = null;
-      for (const model of MODELS) {
-        try {
-          const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
-            method: "POST",
-            headers: {
-              "Authorization": `Bearer ${apiKey}`,
-              "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-              model,
-              messages: apiMessages,
-              temperature: 0.3,
-              max_tokens: 400,
-              // Reasoning off: these are simple CV lookups and thinking tokens only add latency
-              reasoning: { enabled: false }
-            }),
-            signal: AbortSignal.timeout(MODEL_TIMEOUT_MS)
-          });
-
-          const data = await response.json();
-
-          if (response.ok && data.choices?.[0]?.message?.content?.trim()) {
-            assistantMessage = data.choices[0].message;
-            break;
-          }
-          console.warn(`Model ${model} failed, trying next:`, data.error?.message || response.status);
-        } catch (modelError) {
-          console.warn(`Model ${model} failed, trying next:`, modelError);
-        }
-      }
+      const response = await fetch(CHAT_ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ messages: newMessages.map(m => ({ role: m.role, content: m.content })) }),
+        signal: AbortSignal.timeout(CHAT_TIMEOUT_MS)
+      });
+      const data = await response.json();
 
       if (conversationId !== conversationIdRef.current) return;
 
-      if (assistantMessage) {
-        setMessages(prev => [...prev, {
-          role: 'assistant',
-          content: assistantMessage.content.trim()
-        }]);
-      } else {
-        throw new Error("All models failed");
+      if (!response.ok || !data.content) {
+        throw new Error(data.error || `Chat request failed (${response.status})`);
       }
+
+      setMessages(prev => [...prev, { role: 'assistant', content: data.content }]);
 
     } catch (error) {
       console.error("Chat error:", error);
@@ -296,7 +208,26 @@ const ChatAssistant = () => {
     setLeadDismissed(false);
     setLeadForm({ name: '', email: '' });
     setInputValue('');
+    launcherRef.current?.focus();
   };
+
+  // Lets the Escape listener call the latest handleClose without re-subscribing on every render
+  const closeRef = useRef(handleClose);
+  useEffect(() => {
+    closeRef.current = handleClose;
+  });
+
+  // Keyboard users land in the input when the chat opens, and Escape closes it
+  useEffect(() => {
+    if (!isOpen) return;
+    inputRef.current?.focus();
+
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') closeRef.current();
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen]);
 
   const handleLeadSubmit = (e) => {
     e.preventDefault();
@@ -313,16 +244,21 @@ const ChatAssistant = () => {
     <>
       {/* Floating Button */}
       <motion.button
+        ref={launcherRef}
         className="chat-toggle-btn"
         onClick={() => setIsOpen(true)}
         initial={{ scale: 0 }}
         animate={{ scale: isOpen ? 0 : 1 }}
-        whileHover={{ scale: 1.1 }}
-        whileTap={{ scale: 0.9 }}
-        aria-label="Open AI assistant"
+        whileHover={{ scale: 1.06 }}
+        whileTap={{ scale: 0.94 }}
+        aria-label="Open the AI assistant chat"
+        aria-haspopup="dialog"
+        aria-expanded={isOpen}
+        tabIndex={isOpen ? -1 : 0}
+        style={{ pointerEvents: isOpen ? 'none' : 'auto' }}
       >
-        <img src="/chat-bubble.png" alt="" className="chat-toggle-bubble" />
-        <img src="/chat-mascot.png" alt="" className="chat-toggle-mascot" />
+        <img src="/chat-bubble.png" alt="" className="chat-toggle-bubble" width="255" height="240" />
+        <img src="/chat-mascot.png" alt="" className="chat-toggle-mascot" width="258" height="420" />
       </motion.button>
 
       {/* Chat Window */}
@@ -330,6 +266,8 @@ const ChatAssistant = () => {
         {isOpen && (
           <motion.div
             className="chat-window"
+            role="dialog"
+            aria-label="Chat with Sayan's AI assistant"
             initial={{ opacity: 0, y: 50, scale: 0.9 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 50, scale: 0.9 }}
@@ -342,17 +280,17 @@ const ChatAssistant = () => {
                   <img src="/chat-bubble.png" alt="" />
                 </div>
                 <div>
-                  <h3>Sayan's AI Assistant</h3>
-                  <p className="chat-status"><span className="chat-status-dot"></span>Online · answers from his CV</p>
+                  <h2>Sayan's AI Assistant</h2>
+                  <p className="chat-status"><span className="chat-status-dot" aria-hidden="true"></span>AI assistant · answers from his CV</p>
                 </div>
               </div>
-              <button className="close-btn" onClick={handleClose} aria-label="Close chat">
-                <X size={20} />
+              <button className="close-btn" onClick={handleClose} aria-label="Close and end chat">
+                <X size={20} aria-hidden="true" />
               </button>
             </div>
 
             {/* Messages Area */}
-            <div className="chat-messages">
+            <div className="chat-messages" role="log" aria-live="polite" aria-label="Conversation">
               {messages.map((msg, index) => (
                 <motion.div
                   key={index}
@@ -360,7 +298,7 @@ const ChatAssistant = () => {
                   animate={{ opacity: 1, y: 0 }}
                   className={`chat-bubble-container ${msg.role}`}
                 >
-                  <div className="chat-bubble-avatar">
+                  <div className="chat-bubble-avatar" aria-hidden="true">
                     {msg.role === 'assistant' ? <Bot size={16} /> : <User size={16} />}
                   </div>
                   <div className={`chat-bubble ${msg.role}`}>
@@ -389,6 +327,8 @@ const ChatAssistant = () => {
                   <input
                     type="text"
                     placeholder="Your name (optional)"
+                    aria-label="Your name (optional)"
+                    autoComplete="name"
                     value={leadForm.name}
                     onChange={(e) => setLeadForm({ ...leadForm, name: e.target.value })}
                     maxLength={100}
@@ -396,6 +336,8 @@ const ChatAssistant = () => {
                   <input
                     type="email"
                     placeholder="Your email"
+                    aria-label="Your email"
+                    autoComplete="email"
                     value={leadForm.email}
                     onChange={(e) => setLeadForm({ ...leadForm, email: e.target.value })}
                     maxLength={200}
@@ -411,16 +353,16 @@ const ChatAssistant = () => {
               )}
               {visitor && (
                 <div className="chat-lead-card chat-lead-done">
-                  <Check size={16} />
+                  <Check size={16} aria-hidden="true" />
                   <span>Thanks{visitor.name ? `, ${visitor.name}` : ''}! Sayan will reach out at {visitor.email}.</span>
                 </div>
               )}
               {isLoading && (
                 <div className="chat-bubble-container assistant">
-                  <div className="chat-bubble-avatar">
+                  <div className="chat-bubble-avatar" aria-hidden="true">
                     <Bot size={16} />
                   </div>
-                  <div className="chat-bubble assistant typing" aria-label="Assistant is typing">
+                  <div className="chat-bubble assistant typing" role="status" aria-label="Assistant is typing">
                     <span className="typing-dot"></span>
                     <span className="typing-dot"></span>
                     <span className="typing-dot"></span>
@@ -433,17 +375,20 @@ const ChatAssistant = () => {
             {/* Input Area */}
             <form className="chat-input-area" onSubmit={handleSendMessage}>
               <input
+                ref={inputRef}
                 type="text"
                 placeholder="Ask about skills, experience, projects..."
+                aria-label="Your question"
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
-                disabled={isLoading}
+                maxLength={500}
+                autoComplete="off"
               />
               <button type="submit" disabled={!inputValue.trim() || isLoading} aria-label="Send message">
-                <Send size={18} />
+                <Send size={18} aria-hidden="true" />
               </button>
             </form>
-            <p className="chat-privacy-note">Chats may be shared with Sayan so he can follow up.</p>
+            <p className="chat-privacy-note">Answers come from an AI service. Chats may be shared with Sayan so he can follow up.</p>
           </motion.div>
         )}
       </AnimatePresence>

@@ -1,4 +1,3 @@
-import React from 'react';
 import { motion } from 'framer-motion';
 import { GraduationCap, Award, MapPin, Calendar, Building } from 'lucide-react';
 import './Education.css';
@@ -45,7 +44,7 @@ const Education = () => {
 
   const containerVariants = {
     hidden: { opacity: 0 },
-    visible: { 
+    visible: {
       opacity: 1,
       transition: { staggerChildren: 0.2 }
     }
@@ -53,7 +52,7 @@ const Education = () => {
 
   const itemVariants = {
     hidden: { opacity: 0, x: -20 },
-    visible: { 
+    visible: {
       opacity: 1, x: 0,
       transition: { duration: 0.5, type: "spring", stiffness: 100 }
     }
@@ -62,17 +61,17 @@ const Education = () => {
   return (
     <section id="education" className="section education-section">
       <div className="container">
-        <motion.div 
-          className="section-header text-center"
+        <motion.div
+          className="section-header"
           initial={{ opacity: 0, y: -20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-100px" }}
         >
           <h2 className="section-title">Academic <span>Journey</span></h2>
         </motion.div>
-        
+
         <div className="edu-timeline-container">
-          <motion.div 
+          <motion.div
             className="edu-timeline-items"
             variants={containerVariants}
             initial="hidden"
@@ -80,42 +79,42 @@ const Education = () => {
             viewport={{ once: true, margin: "-50px" }}
           >
             {/* Glowing Left Line */}
-            <div className="edu-timeline-line"></div>
+            <div className="edu-timeline-line" aria-hidden="true"></div>
 
             {educations.map((edu, index) => {
               const isEven = index % 2 !== 0; // matching work experience logic
               return (
               <motion.div key={edu.id} className={`edu-timeline-item ${isEven ? 'right' : 'left'}`} variants={itemVariants}>
-                
+
                 {/* Timeline Node */}
-                <div className="edu-timeline-node">
-                  <GraduationCap size={18} className="node-icon" />
+                <div className="edu-timeline-node" aria-hidden="true">
+                  <GraduationCap size={18} aria-hidden="true" />
                 </div>
 
                 {/* Content Card */}
                 <div className="edu-card glass-card">
                   <h3 className="edu-degree">{edu.degree}</h3>
-                  <h4 className="edu-institution">{edu.institution}</h4>
-                  
+                  <p className="edu-institution">{edu.institution}</p>
+
                   <div className="edu-meta-flex">
                     <span className="edu-duration">
-                      <Calendar size={14} className="meta-icon" /> {edu.duration}
+                      <Calendar size={14} className="meta-icon" aria-hidden="true" /> {edu.duration}
                     </span>
-                    
+
                     {edu.board && (
                       <>
-                        <span className="edu-meta-divider">|</span>
+                        <span className="edu-meta-divider" aria-hidden="true">|</span>
                         <span className="edu-board">
-                          <Building size={14} className="meta-icon" /> {edu.board}
+                          <Building size={14} className="meta-icon" aria-hidden="true" /> {edu.board}
                         </span>
                       </>
                     )}
-                    
+
                     {edu.location && (
                       <>
-                        <span className="edu-meta-divider">|</span>
+                        <span className="edu-meta-divider" aria-hidden="true">|</span>
                         <span className="edu-location">
-                          <MapPin size={14} className="meta-icon" /> {edu.location}
+                          <MapPin size={14} className="meta-icon" aria-hidden="true" /> {edu.location}
                         </span>
                       </>
                     )}
@@ -123,7 +122,7 @@ const Education = () => {
 
                   <div className="edu-score-container">
                     <span className="edu-score-badge">
-                      <Award size={15} /> {edu.scoreLabel}: {edu.score}
+                      <Award size={15} aria-hidden="true" /> {edu.scoreLabel}: {edu.score}
                     </span>
                   </div>
                 </div>
